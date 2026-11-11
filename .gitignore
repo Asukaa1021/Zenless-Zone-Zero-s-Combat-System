@@ -1,0 +1,33 @@
+# Unity 生成的缓存、临时文件和构建结果
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Bb]uild/
+/[Bb]uilds/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# IDE 缓存和自动生成的工程文件
+.vs/
+.gradle/
+*.csproj
+*.unityproj
+*.sln
+*.slnx
+*.suo
+*.user
+*.userprefs
+*.opendb
+*.VC.db
+.vsconfig
+
+# 临时文件
+*.tmp
+*.log
+*.pidb
+*.pdb
+*.mdb
+.DS_Store
+Thumbs.db
