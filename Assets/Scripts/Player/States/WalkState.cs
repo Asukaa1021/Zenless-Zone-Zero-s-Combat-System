@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class WalkState : MovementState
 {
-    [SerializeField] private float moveEnptyInputTimer = 0;
+    private float moveEnptyInputTimer;
+    private float walkToRunTimer;
     public WalkState(StateMachine stateMachine):base(stateMachine)
     {
     }
@@ -14,12 +15,19 @@ public class WalkState : MovementState
         Debug.Log("Walk");
         stateMachine.Player.Animator.SetFloat("waitTime", 0);
         stateMachine.Player.Animator.SetBool("isWalking", true);
+        walkToRunTimer = 0;
         moveEnptyInputTimer = 0;
     }
     override public void Update()
     {
         base.Update();
-        
+        walkToRunTimer += Time.deltaTime;
+
+        if(walkToRunTimer > stateMachine.Player.PlayerSO.StaticData.walkToRunTime)
+        {
+            stateMachine.ChangeState(stateMachine.RunState);
+        }
+
         if(stateMachine.Player.PlayerSO.ReusableData.moveVector == Vector2.zero)
         {
             moveEnptyInputTimer += Time.deltaTime;
@@ -27,8 +35,9 @@ public class WalkState : MovementState
             if(moveEnptyInputTimer > stateMachine.Player.PlayerSO.StaticData.moveInputIntervalTime)
             {
                 moveEnptyInputTimer = 0f;
-                stateMachine.Player.Rigidbody.velocity = Vector3.zero;
+
                 stateMachine.ChangeState(stateMachine.WalkStopState);
+                return;
             }
         }
         else

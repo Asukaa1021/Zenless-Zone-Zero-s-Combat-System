@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class IdleState : MovementState
@@ -30,21 +27,21 @@ public class IdleState : MovementState
                 moveHoldTime = 0;
                 stateMachine.ChangeState(stateMachine.WalkStopState);
             }
-            
+
             return;
         }
 
         moveHoldTime += Time.deltaTime;
 
         if (moveHoldTime >= stateMachine.Player.PlayerSO.StaticData.idleToWalkMoveHoldTime)
-        { 
+        {
             stateMachine.ChangeState(stateMachine.WalkState);
         }
-        
+
     }
     public override void FixedUpdate()
     {
-        
+
     }
     override public void Exit()
     {
@@ -52,3 +49,4 @@ public class IdleState : MovementState
         stateMachine.Player.Animator.SetBool("isIdling", false);
     }
 }
+

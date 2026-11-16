@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public interface IState
 {
     void Enter();
@@ -9,3 +5,4 @@ public interface IState
     void Update();
     void FixedUpdate();
 }
+

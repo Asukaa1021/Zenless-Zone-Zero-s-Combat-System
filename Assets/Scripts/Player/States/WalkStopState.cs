@@ -22,14 +22,23 @@ public class WalkStopState : MovementState
 
     public override void Update()
     {
+        base.Update();
+        if (stateMachine.Player.Motor.Velocity.sqrMagnitude <= 0.01)
+        {
+            stateMachine.ChangeState(stateMachine.IdleState);
+            return;
+        }
+
         if (stateMachine.Player.PlayerSO.ReusableData.moveVector != Vector2.zero)
         {
             stateMachine.ChangeState(stateMachine.WalkState);
             return;
         }
-
-        stateMachine.ChangeState(stateMachine.IdleState);
-        return;
         
+    }
+
+    public override void FixedUpdate()
+    {
+        DecreaseVelocity();
     }
 }

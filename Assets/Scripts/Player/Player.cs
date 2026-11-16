@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Windows;
 
 public class Player : MonoBehaviour
 {
@@ -11,13 +7,20 @@ public class Player : MonoBehaviour
     [field: SerializeField] public Animator Animator { get; set; }
     [field: SerializeField] public Transform CameraTransform { get; private set; }
     [field: SerializeField] public StateMachine stateMachine;
-    public Rigidbody Rigidbody { get; private set; }
+    public CharacterController Controller { get; private set; }
+    public PlayerMotor Motor { get; private set; }
+    
     private void Awake()
     {
         Input = new PlayerInput();
-        Rigidbody = GetComponent<Rigidbody>();
+        Controller = GetComponent<CharacterController>();
+        Motor = new PlayerMotor(Controller);
+
+
         PlayerSO = ScriptableObject.CreateInstance<PlayerSO>();
         stateMachine = new StateMachine(this);
+
+        
     }
 
     void Start()
@@ -25,7 +28,6 @@ public class Player : MonoBehaviour
         PlayerSO.ReusableData.currentSpeed = PlayerSO.StaticData.DefaultSpeed;
     }
 
-    // Update is called once per frame
     void Update()
     {
         PlayerSO.ReusableData.moveVector = Input.MovementInput.Move.ReadValue<Vector2>();
@@ -37,6 +39,10 @@ public class Player : MonoBehaviour
         stateMachine?.FixedUpdate();
     }
 
+    private void LateUpdate()
+    {
+        Motor.Tick(Time.fixedDeltaTime);
+    }
     private void OnDestroy()
     {
         Destroy(PlayerSO);
@@ -52,3 +58,4 @@ public class Player : MonoBehaviour
         Input.Disable();
     }
 }
+

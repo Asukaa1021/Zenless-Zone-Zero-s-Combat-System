@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Unity.VisualScripting;
+using UnityEditor.Timeline;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 [Serializable]
 public class MovementState : IState
@@ -48,27 +51,23 @@ public class MovementState : IState
 
         Vector3 moveDirection = cameraRotation * inputDirection;
 
-        stateMachine.Player.Rigidbody.AddForce(
-        new Vector3(
-            -stateMachine.Player.Rigidbody.velocity.x + moveDirection.x * stateMachine.Player.PlayerSO.ReusableData.currentSpeed,
-            0f,
-            -stateMachine.Player.Rigidbody.velocity.z + moveDirection.z * stateMachine.Player.PlayerSO.ReusableData.currentSpeed
-            ),
-        ForceMode.VelocityChange);
+        stateMachine.Player.Motor.Move(
+            moveDirection,
+            stateMachine.Player.PlayerSO.ReusableData.currentSpeed
+            );
     }
 
     protected void ChangeFacing()
     {
-        Vector3 moveDirection = stateMachine.Player.Rigidbody.velocity;
-        moveDirection.y = 0f;
+        stateMachine.Player.Motor.ChangeFacing(
+            stateMachine.Player.PlayerSO.StaticData.turnSpeed
+            );
+    }
 
-        if (moveDirection.magnitude < 0.001f) return;
-
-        Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-        stateMachine.Player.Rigidbody.MoveRotation(Quaternion.Slerp(
-            stateMachine.Player.Rigidbody.rotation, 
-            targetRotation, 
-            stateMachine.Player.PlayerSO.StaticData.turnSpeed * Time.fixedDeltaTime
-            ));
+    protected void DecreaseVelocity()
+    {
+        stateMachine.Player.Motor.DecreaseVelocity(
+            stateMachine.Player.PlayerSO.StaticData.velocityDecreaseRate
+            );
     }
 }

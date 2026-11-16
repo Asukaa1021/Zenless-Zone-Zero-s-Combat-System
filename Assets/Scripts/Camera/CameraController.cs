@@ -1,7 +1,4 @@
 using Cinemachine;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -11,7 +8,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float targetDistance;
     private float zoomVelocity;
     private float recenterPitchVelocity;
-    
+
     private CinemachineTransposer transposer;
     private float distance;
     private float yaw;
@@ -32,7 +29,7 @@ public class CameraController : MonoBehaviour
     {
         Vector2 lookInput = player.Input.CameraInput.Look.ReadValue<Vector2>();
         float distanceInput = player.Input.CameraInput.Zoom.ReadValue<float>();
-        
+
         if(lookInput != Vector2.zero)
         {
             lastLookInputTimer = Time.time;
@@ -41,9 +38,7 @@ public class CameraController : MonoBehaviour
         yaw += lookInput.x * player.PlayerSO.StaticData.lookSensitivity;
         pitch -= lookInput.y * player.PlayerSO.StaticData.lookSensitivity;
 
-        Vector3 cameraHorizontal = Quaternion.Euler(pitch, yaw, 0f) * Vector3.forward;
-
-        CameraAutoRecenter(cameraHorizontal);
+        CameraAutoRecenter();
 
         pitch = Mathf.Clamp(pitch,-80f,80f);
 
@@ -56,18 +51,15 @@ public class CameraController : MonoBehaviour
             player.PlayerSO.StaticData.zoomSmoothTime
             );
 
-        Debug.Log(targetDistance);
-
         transposer.m_FollowOffset = Quaternion.Euler(pitch, yaw, 0f) * new Vector3(0f, 0f, -distance);
     }
 
-    private void CameraAutoRecenter(Vector3 cameraHorizontal)
+    private void CameraAutoRecenter()
     {
-        Vector3 velocity = player.Rigidbody.velocity;
+        Vector3 velocity = player.Motor.Velocity;
         velocity.y = 0f;
         bool isMoving = velocity.sqrMagnitude > 0.01f;
         bool recentlyLooked = Time.time - lastLookInputTimer < player.PlayerSO.StaticData.recenterDelay;
-    //    float horizontalAngle = Vector3.Angle(cameraHorizontal, velocity);
 
         if (!isMoving || recentlyLooked)
         {
@@ -83,3 +75,4 @@ public class CameraController : MonoBehaviour
             );
     }
 }
+

@@ -1,16 +1,15 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
-public class StateMachine : IState
+public class StateMachine
 {
     [field: SerializeField] public Player Player { get; private set; }
     [field: SerializeField] public WalkState WalkState { get; private set; }
     [field: SerializeField] public IdleState IdleState { get; private set; }
+    [field: SerializeField] public RunState RunState { get; private set; }
     [field: SerializeField] public WalkStopState WalkStopState { get; private set; }
+    [field: SerializeField] public RunStopState RunStopState { get; private set; }
     private IState currentState;
 
     public StateMachine(Player player)
@@ -18,7 +17,9 @@ public class StateMachine : IState
         Player = player;
         IdleState =  new IdleState(this);
         WalkState = new WalkState(this);
+        RunState = new RunState(this);
         WalkStopState = new WalkStopState(this);
+        RunStopState = new RunStopState(this);
         currentState = IdleState;
         currentState.Enter();
     }
@@ -39,12 +40,5 @@ public class StateMachine : IState
         currentState?.Update();
     }
 
-    public void Enter()
-    {
-        currentState?.Enter();
-    }
-    public void Exit()
-    {
-        currentState?.Exit();
-    }
 }
+
