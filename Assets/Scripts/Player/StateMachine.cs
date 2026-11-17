@@ -10,6 +10,7 @@ public class StateMachine
     [field: SerializeField] public RunState RunState { get; private set; }
     [field: SerializeField] public WalkStopState WalkStopState { get; private set; }
     [field: SerializeField] public RunStopState RunStopState { get; private set; }
+    [field: SerializeField] public TurnBackState TurnBackState { get; private set; }
     private IState currentState;
 
     public StateMachine(Player player)
@@ -20,6 +21,7 @@ public class StateMachine
         RunState = new RunState(this);
         WalkStopState = new WalkStopState(this);
         RunStopState = new RunStopState(this);
+        TurnBackState = new TurnBackState(this);
         currentState = IdleState;
         currentState.Enter();
     }

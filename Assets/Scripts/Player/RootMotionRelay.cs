@@ -18,5 +18,6 @@ public class RootMotionRelay : MonoBehaviour
     {
         deltaPositon = animator.deltaPosition;
         player.Motor.AddRootMotion(deltaPositon);
+        player.Motor.AddRootRotation(animator.deltaRotation);
     }
 }

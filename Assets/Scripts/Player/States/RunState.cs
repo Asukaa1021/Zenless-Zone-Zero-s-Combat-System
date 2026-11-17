@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 public class RunState : MovementState
@@ -29,9 +30,39 @@ public class RunState : MovementState
     public override void Update()
     {
         base.Update();
+        Vector2 moveInput = stateMachine.Player.Input.MovementInput.Move.ReadValue<Vector2>();
+        if (moveInput != Vector2.zero)
+        {
+            Vector3 inputDirection = new Vector3(
+                moveInput.x,
+                0f,
+                moveInput.y
+                );
 
-        if (stateMachine.Player.Input.MovementInput.Move.ReadValue<Vector2>()
-            == Vector2.zero)
+            Quaternion cameraRotation = Quaternion.Euler(
+                0f,
+                stateMachine.Player.CameraTransform.eulerAngles.y,
+                0f
+                );
+
+            Vector3 worldDirection = cameraRotation * inputDirection;
+
+            float angle = Vector3.Angle( worldDirection, stateMachine.Player.transform.forward );
+
+            bool canTurnBack = stateMachine.Player.Controller.isGrounded &&
+                               !stateMachine.Player.Animator.IsInTransition(0) &&
+                               stateMachine.Player.Animator.GetCurrentAnimatorStateInfo(0)
+                               .IsName("Base Layer.RunState.Anbi_Run");
+
+            if (canTurnBack && angle >= 120f)
+            {
+                stateMachine.Player.Motor.SetFacingDirection(worldDirection);
+                stateMachine.ChangeState(stateMachine.TurnBackState);
+                return;
+            }
+        }
+
+        if (moveInput == Vector2.zero)
         {
             moveEmptyInputTimer += Time.deltaTime;
 
