@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -49,10 +50,19 @@ public class RunState : MovementState
 
             float angle = Vector3.Angle( worldDirection, stateMachine.Player.transform.forward );
 
+            bool isTransition = stateMachine.Player.Animator.IsInTransition(0);
+            AnimatorStateInfo current = stateMachine.Player.Animator.GetCurrentAnimatorStateInfo(0);
+
+            bool isRunOrStart = !isTransition &&
+                                (current.IsName("Base Layer.RunState.Anbi_Run") ||
+                                current.IsName("Base Layer.RunState.Anbi_Run_Start"));
+
+            bool isReturningToRun = isTransition &&
+                                    current.IsName("Base Layer.RunState.Anbi_TurnBack") &&
+                                    stateMachine.Player.Animator.GetNextAnimatorStateInfo(0).IsName("Base Layer.RunState.Anbi_Run");
+
             bool canTurnBack = stateMachine.Player.Controller.isGrounded &&
-                               !stateMachine.Player.Animator.IsInTransition(0) &&
-                               stateMachine.Player.Animator.GetCurrentAnimatorStateInfo(0)
-                               .IsName("Base Layer.RunState.Anbi_Run");
+                                (isRunOrStart || isReturningToRun);
 
             if (canTurnBack && angle >= 120f)
             {
