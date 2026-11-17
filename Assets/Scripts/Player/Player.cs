@@ -37,11 +37,12 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         stateMachine?.FixedUpdate();
+        Motor.ChangeFacing(stateMachine.Player.PlayerSO.StaticData.turnSpeed);
     }
 
     private void LateUpdate()
     {
-        Motor.Tick(Time.fixedDeltaTime);
+        Motor.Tick(Time.deltaTime);
     }
     private void OnDestroy()
     {

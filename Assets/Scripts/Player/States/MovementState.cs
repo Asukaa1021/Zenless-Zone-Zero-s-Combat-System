@@ -32,7 +32,6 @@ public class MovementState : IState
     public virtual void FixedUpdate()
     {
         Move();
-        ChangeFacing();
     }
 
     protected void Move()

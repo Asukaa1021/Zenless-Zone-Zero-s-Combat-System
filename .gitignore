@@ -1,17 +1,36 @@
-# Unity 生成的缓存、临时文件和构建结果
+# 放在 Unity 项目根目录，与 Assets、Packages、ProjectSettings 同级。
+# 参考：https://github.com/github/gitignore/blob/main/Unity.gitignore
+# Assets 中的源资源及其 .meta、Packages、ProjectSettings 应提交到 Git。
+
+# Unity 缓存、临时文件与本机设置
+.utmp/
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/[Mm]emory[Cc]aptures/
+/[Rr]ecordings/
+/UIElementsSchema/
+
+# 构建输出与 Unity 生成的构建备份
 /[Bb]uild/
 /[Bb]uilds/
-/[Mm]emoryCaptures/
-/[Rr]ecordings/
+/*_BackUpThisFolder_ButDontShipItWithYourGame/
+/*_BurstDebugInformation_DoNotShip/
+*.apk
+*.aab
+*.obb
+*.app
+*.unitypackage
+*.unitypackage.meta
 
-# IDE 缓存和自动生成的工程文件
+# Visual Studio、Rider、MonoDevelop 与 Gradle 本机文件
 .vs/
+.idea/
 .gradle/
+.consulo/
+ExportedObj/
 *.csproj
 *.unityproj
 *.sln
@@ -19,15 +38,58 @@
 *.suo
 *.user
 *.userprefs
+*.DotSettings.user
 *.opendb
 *.VC.db
+*.booproj
+*.svd
 .vsconfig
+/[Aa]ssets/Plugins/Editor/JetBrains*
 
-# 临时文件
+# 编译中间文件、日志与崩溃记录
 *.tmp
 *.log
 *.pidb
 *.pdb
 *.mdb
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+/sysinfo.txt
+.dirstamp
+mono_crash.*
+tmpinst-dir.stamp
+crashlytics-build.properties
+
+# Unity 自动恢复、资源导入缓存与 Blender 备份
+/[Aa]ssets/_Recovery/
+/[Aa]ssets/_Recovery.meta
+/[Aa]ssets/[Ss]ceneDependencyCache*
+/[Aa]ssets/**/*.blend1
+/[Aa]ssets/**/*.blend1.meta
+
+# Addressables 生成的内容
+/[Aa]ssets/AddressableAssetsData/*/addressables_content_state.bin
+/[Aa]ssets/AddressableAssetsData/*/addressables_content_state.bin.meta
+/[Aa]ssets/AddressableAssetsData/link.xml
+/[Aa]ssets/AddressableAssetsData/link.xml.meta
+/[Aa]ssets/Addressables_Temp/
+/[Aa]ssets/Addressables_Temp.meta
+/[Aa]ssets/StreamingAssets/aa/
+/[Aa]ssets/StreamingAssets/aa.meta
+/ServerData/
+
+# Android 依赖解析、Gradle 与 Visual Scripting 生成的数据
+/[Aa]ssets/GeneratedLocalRepo/
+/[Aa]ssets/GeneratedLocalRepo.meta
+/[Aa]ssets/Plugins/Android/**/*.gradle.backup*
+/[Aa]ssets/Plugins/Android/**/local.properties
+/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers/
+/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers.meta
+/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db
+/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db.meta
+
+# Windows 与 macOS 自动生成的文件
 .DS_Store
 Thumbs.db
+Desktop.ini

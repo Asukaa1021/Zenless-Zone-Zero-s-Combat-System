@@ -9,6 +9,7 @@ public class PlayerMotor
     private Vector3 horizontalVelocity;
     private float verticalSpeed;
     private Vector3 rootMotionDelta;
+    private Vector3 facingDerection;
     public Vector3 Velocity => controller.velocity;
     public PlayerMotor(CharacterController controller)
     {
@@ -19,6 +20,11 @@ public class PlayerMotor
     {
         direction.y = 0f;
         horizontalVelocity = direction * speed;
+
+        if(direction.sqrMagnitude > 0.000001f)
+        {
+            facingDerection = direction;
+        }
     }
     public void AddRootMotion(Vector3 deltaPosition)
     {
@@ -27,20 +33,25 @@ public class PlayerMotor
     }
     public void ChangeFacing(float turnSpeed)
     {
-        if(horizontalVelocity.sqrMagnitude < 0.000001f)
+        if(facingDerection.sqrMagnitude < 0.000001f)
         {
             return;
         }
 
         Transform root = controller.transform;
 
-        Quaternion targetRotation = Quaternion.LookRotation(horizontalVelocity);
+        Quaternion targetRotation = Quaternion.LookRotation(facingDerection);
 
         root.rotation = Quaternion.Slerp(
             root.rotation,
             targetRotation,
             turnSpeed * Time.fixedDeltaTime
             );
+
+        if(Quaternion.Angle(root.rotation, targetRotation) < 0.1f)
+        {
+            root.rotation = targetRotation; 
+        }
     }
 
     public void DecreaseVelocity(float decreaseRate)
