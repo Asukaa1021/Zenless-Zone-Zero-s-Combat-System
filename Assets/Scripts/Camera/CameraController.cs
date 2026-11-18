@@ -51,7 +51,9 @@ public class CameraController : MonoBehaviour
             player.PlayerSO.StaticData.zoomSmoothTime
             );
 
-        transposer.m_FollowOffset = Quaternion.Euler(pitch, yaw, 0f) * new Vector3(0f, 0f, -distance);
+        Quaternion orbitRotation = Quaternion.Euler(pitch, yaw, 0);
+        transposer.m_FollowOffset = orbitRotation * new Vector3(0f, 0f, -distance);
+        virtualCamera.transform.rotation = orbitRotation;
     }
 
     private void CameraAutoRecenter()

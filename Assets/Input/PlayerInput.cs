@@ -100,6 +100,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Evade"",
+                    ""type"": ""Button"",
+                    ""id"": ""e33b0cb1-0fbb-4525-9e1b-4c3bd75b51f8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -157,6 +166,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""df5c08f8-9794-4a0a-a08d-c50b4406510e"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Evade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -214,6 +234,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         // MovementInput
         m_MovementInput = asset.FindActionMap("MovementInput", throwIfNotFound: true);
         m_MovementInput_Move = m_MovementInput.FindAction("Move", throwIfNotFound: true);
+        m_MovementInput_Evade = m_MovementInput.FindAction("Evade", throwIfNotFound: true);
         // CameraInput
         m_CameraInput = asset.FindActionMap("CameraInput", throwIfNotFound: true);
         m_CameraInput_Look = m_CameraInput.FindAction("Look", throwIfNotFound: true);
@@ -300,6 +321,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_MovementInput;
     private List<IMovementInputActions> m_MovementInputActionsCallbackInterfaces = new List<IMovementInputActions>();
     private readonly InputAction m_MovementInput_Move;
+    private readonly InputAction m_MovementInput_Evade;
     /// <summary>
     /// Provides access to input actions defined in input action map "MovementInput".
     /// </summary>
@@ -315,6 +337,10 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "MovementInput/Move".
         /// </summary>
         public InputAction @Move => m_Wrapper.m_MovementInput_Move;
+        /// <summary>
+        /// Provides access to the underlying input action "MovementInput/Evade".
+        /// </summary>
+        public InputAction @Evade => m_Wrapper.m_MovementInput_Evade;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -344,6 +370,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
+            @Evade.started += instance.OnEvade;
+            @Evade.performed += instance.OnEvade;
+            @Evade.canceled += instance.OnEvade;
         }
 
         /// <summary>
@@ -358,6 +387,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
+            @Evade.started -= instance.OnEvade;
+            @Evade.performed -= instance.OnEvade;
+            @Evade.canceled -= instance.OnEvade;
         }
 
         /// <summary>
@@ -512,6 +544,13 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMove(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Evade" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnEvade(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "CameraInput" which allows adding and removing callbacks.

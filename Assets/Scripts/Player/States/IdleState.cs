@@ -15,19 +15,24 @@ public class IdleState : MovementState
         stateMachine.Player.Animator.SetBool("isIdling", true);
         moveHoldTime = 0;
     }
+    override public void Exit()
+    {
+        base.Exit();
+        stateMachine.Player.Animator.SetBool("isIdling", false);
+    }
     override public void Update()
     {
         base.Update();
         stateMachine.Player.Animator.SetFloat("waitTime", Time.time - stateMachine.Player.PlayerSO.ReusableData.StartIdleTime);
+ 
 
         if (stateMachine.Player.PlayerSO.ReusableData.moveVector == Vector2.zero)
         {
-            if(moveHoldTime > 0f)
+            if (moveHoldTime > 0f)
             {
                 moveHoldTime = 0;
                 stateMachine.ChangeState(stateMachine.WalkStopState);
             }
-
             return;
         }
 
@@ -36,6 +41,7 @@ public class IdleState : MovementState
         if (moveHoldTime >= stateMachine.Player.PlayerSO.StaticData.idleToWalkMoveHoldTime)
         {
             stateMachine.ChangeState(stateMachine.WalkState);
+            return;
         }
 
     }
@@ -43,10 +49,6 @@ public class IdleState : MovementState
     {
 
     }
-    override public void Exit()
-    {
-        base.Exit();
-        stateMachine.Player.Animator.SetBool("isIdling", false);
-    }
+    
 }
 

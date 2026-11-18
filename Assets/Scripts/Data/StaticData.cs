@@ -8,7 +8,7 @@ public class StaticData
     [field: SerializeField] public float turnSpeed = 10f;
     [field: SerializeField] public float runSpeed = 9f;
     [field: SerializeField] public float walkToRunTime = 3.2f;
-    [field: SerializeField] public float idleToWalkMoveHoldTime = 0.05f;
+    [field: SerializeField] public float idleToWalkMoveHoldTime = 0.1f;
     [field: SerializeField] public float moveInputIntervalTime = 0.15f;
     [field: SerializeField] public float maxCameraDistance = 7f;
     [field: SerializeField] public float minCameraDistance = 1.5f;

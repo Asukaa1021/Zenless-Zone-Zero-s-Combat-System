@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEditor.Timeline;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
+using UnityEngine.Windows;
 
 [Serializable]
 public class MovementState : IState
@@ -27,7 +28,7 @@ public class MovementState : IState
     }
     public virtual void Update()
     {
-
+        HandleEvade();
     }
     public virtual void FixedUpdate()
     {
@@ -68,5 +69,39 @@ public class MovementState : IState
         stateMachine.Player.Motor.DecreaseVelocity(
             stateMachine.Player.PlayerSO.StaticData.velocityDecreaseRate
             );
+    }
+
+    protected bool IsEvadeTime()
+    {
+        Animator animator = stateMachine.Player.Animator;
+        AnimatorStateInfo animationState = animator.GetCurrentAnimatorStateInfo(0);
+        AnimatorStateInfo nextAnimationState = animator.GetNextAnimatorStateInfo(0);
+
+        bool isRunToTurnBack = animator.IsInTransition(0) &&
+                               animationState.IsName("Base Layer.RunState.Anbi_Run") &&
+                               nextAnimationState.IsName("Base Layer.RunState.Anbi_TurnBack");
+
+        bool isTurnBack = animationState.IsName("Base Layer.RunState.Anbi_TurnBack");
+
+        return !(isRunToTurnBack || isTurnBack);
+    }
+
+    protected void HandleEvade()
+    {
+
+        if (IsEvadeTime() && stateMachine.Player.Input.MovementInput.Evade.WasPressedThisFrame())
+        {
+            Vector2 input = stateMachine.Player.Input.MovementInput.Move.ReadValue<Vector2>();
+            if (input == Vector2.zero)
+            {
+                stateMachine.ChangeState(stateMachine.EvadeBackState);
+                return;
+            }
+            else
+            {
+                stateMachine.ChangeState(stateMachine.EvadeFrontState);
+                return;
+            }
+        }
     }
 }
