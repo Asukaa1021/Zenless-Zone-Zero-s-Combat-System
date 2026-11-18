@@ -62,9 +62,10 @@ public class RunState : MovementState
                                     stateMachine.Player.Animator.GetNextAnimatorStateInfo(0).IsName("Base Layer.RunState.Anbi_Run");
 
             bool canTurnBack = stateMachine.Player.Controller.isGrounded &&
-                                (isRunOrStart || isReturningToRun);
+                                (isRunOrStart || isReturningToRun)
+                                 && angle >= 120f;
 
-            if (canTurnBack && angle >= 120f)
+            if (canTurnBack)
             {
                 stateMachine.Player.Motor.SetFacingDirection(worldDirection);
                 stateMachine.ChangeState(stateMachine.TurnBackState);
