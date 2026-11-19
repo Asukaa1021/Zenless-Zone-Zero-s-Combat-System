@@ -1,12 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Unity.VisualScripting;
-using UnityEditor.Timeline;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
-using UnityEngine.Windows;
 
 [Serializable]
 public class MovementState : IState
@@ -31,16 +24,11 @@ public class MovementState : IState
     }
     public virtual void FixedUpdate()
     {
-        Move();
-    }
-
-    protected void Move()
-    {
-        if(stateMachine.Player.PlayerSO.ReusableData.moveVector == Vector2.zero)
+        if(stateMachine.Player.ReusableData.moveVector == Vector2.zero)
         {
             return;
         }
-        Vector3 inputDirection = new Vector3(stateMachine.Player.PlayerSO.ReusableData.moveVector.x, 0f, stateMachine.Player.PlayerSO.ReusableData.moveVector.y);
+        Vector3 inputDirection = new Vector3(stateMachine.Player.ReusableData.moveVector.x, 0f, stateMachine.Player.ReusableData.moveVector.y);
 
         Quaternion cameraRotation = Quaternion.Euler(
             0f,
@@ -50,23 +38,6 @@ public class MovementState : IState
 
         Vector3 moveDirection = cameraRotation * inputDirection;
 
-        stateMachine.Player.Motor.Move(
-            moveDirection,
-            stateMachine.Player.PlayerSO.ReusableData.currentSpeed
-            );
-    }
-
-    protected void ChangeFacing()
-    {
-        stateMachine.Player.Motor.ChangeFacing(
-            stateMachine.Player.PlayerSO.StaticData.turnSpeed
-            );
-    }
-
-    protected void DecreaseVelocity()
-    {
-        stateMachine.Player.Motor.DecreaseVelocity(
-            stateMachine.Player.PlayerSO.StaticData.velocityDecreaseRate
-            );
+        stateMachine.Player.Motor.SetFacingDirection(moveDirection);
     }
 }

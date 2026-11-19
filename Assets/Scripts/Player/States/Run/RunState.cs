@@ -1,5 +1,3 @@
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 public class RunState : MovementState
@@ -15,8 +13,6 @@ public class RunState : MovementState
         base.Enter();
         Debug.Log("Run");
         stateMachine.Player.Animator.SetBool("isRunning", true);
-        stateMachine.Player.PlayerSO.ReusableData.currentSpeed =
-            stateMachine.Player.PlayerSO.StaticData.runSpeed;
         moveEmptyInputTimer = 0f;
     }
 
@@ -24,8 +20,6 @@ public class RunState : MovementState
     {
         base.Exit();
         stateMachine.Player.Animator.SetBool("isRunning", false);
-        stateMachine.Player.PlayerSO.ReusableData.currentSpeed =
-            stateMachine.Player.PlayerSO.StaticData.DefaultSpeed;
     }
 
     public override void Update()

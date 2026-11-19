@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     [field: SerializeField] public Animator Animator { get; set; }
     [field: SerializeField] public Transform CameraTransform { get; private set; }
     [field: SerializeField] public StateMachine stateMachine;
+    [field: SerializeField] public ReusableData ReusableData { get; private set; } = new ReusableData();
     public CharacterController Controller { get; private set; }
     public PlayerMotor Motor { get; private set; }
     
@@ -16,37 +17,21 @@ public class Player : MonoBehaviour
         Controller = GetComponent<CharacterController>();
         Motor = new PlayerMotor(Controller);
 
-
-        PlayerSO = ScriptableObject.CreateInstance<PlayerSO>();
         stateMachine = new StateMachine(this);
 
-        
-    }
-
-    void Start()
-    {
-        PlayerSO.ReusableData.currentSpeed = PlayerSO.StaticData.DefaultSpeed;
+        Cursor.visible = false;
     }
 
     void Update()
     {
-        PlayerSO.ReusableData.moveVector = Input.MovementInput.Move.ReadValue<Vector2>();
-        float turnSpeed = PlayerSO.StaticData.turnSpeed;
-        if (Animator.IsInTransition(0) &&
-            Animator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.Anbi_Evade_Front") &&
-            Animator.GetNextAnimatorStateInfo(0).IsName("Base Layer.RunState.Anbi_Run"))
-        {
-            float progress = Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-            turnSpeed = turnSpeed * Mathf.Lerp(0.1f, 1f, progress);
-        }
-
+        ReusableData.moveVector = Input.MovementInput.Move.ReadValue<Vector2>();
         stateMachine?.Update();
     }
 
     private void FixedUpdate()
     {
         stateMachine?.FixedUpdate();
-        Motor.ChangeFacing(stateMachine.Player.PlayerSO.StaticData.turnSpeed);
+        Motor.ChangeFacing(PlayerSO.StaticData.turnSpeed);
     }
 
     private void LateUpdate()
@@ -55,7 +40,6 @@ public class Player : MonoBehaviour
     }
     private void OnDestroy()
     {
-        Destroy(PlayerSO);
         Input.Dispose();
     }
 

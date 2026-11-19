@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WalkStopState : MovementState
@@ -29,7 +27,7 @@ public class WalkStopState : MovementState
             return;
         }
 
-        if (stateMachine.Player.PlayerSO.ReusableData.moveVector != Vector2.zero)
+        if (stateMachine.Player.ReusableData.moveVector != Vector2.zero)
         {
             stateMachine.ChangeState(stateMachine.WalkState);
             return;
@@ -39,6 +37,6 @@ public class WalkStopState : MovementState
 
     public override void FixedUpdate()
     {
-        DecreaseVelocity();
+        // Root motion drives the stop without changing the facing direction.
     }
 }

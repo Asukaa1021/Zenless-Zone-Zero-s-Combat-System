@@ -64,37 +64,30 @@ public class StateMachine
 
     private bool TryHandleEvade()
     {
-        if (IsEvadeTime())
+        if (!Player.Input.MovementInput.Evade.WasPressedThisFrame() || !IsEvadeTime())
+            return false;
+
+        Vector2 input = Player.Input.MovementInput.Move.ReadValue<Vector2>();
+        if (input == Vector2.zero)
         {
-            if (IsEvadeTime() && Player.Input.MovementInput.Evade.WasPressedThisFrame())
-            {
-                Vector2 input = Player.Input.MovementInput.Move.ReadValue<Vector2>();
-                if (input == Vector2.zero)
-                {
-                    ChangeState(EvadeBackState);
-                    return true;
-                }
-                else
-                {
-                    Quaternion cameraYaw = Quaternion.Euler(
-                        0f,
-                        Player.CameraTransform.eulerAngles.y,
-                        0f
-                        );
-
-                    Vector2 moveInput = Player.Input.MovementInput.Move.ReadValue<Vector2>();
-                    Vector3 moveDirection = new Vector3(moveInput.x, 0f, moveInput.y);
-
-                    Vector3 worldDirection = cameraYaw * moveDirection;
-                    Player.Motor.SetFacingDirection(worldDirection);
-                    Player.transform.rotation = Quaternion.LookRotation(worldDirection);
-
-                    ChangeState(EvadeFrontState);
-                    return true;
-                }
-            }
+            ChangeState(EvadeBackState);
+            return true;
         }
-        return false;
+
+        Quaternion cameraYaw = Quaternion.Euler(
+            0f,
+            Player.CameraTransform.eulerAngles.y,
+            0f
+            );
+
+        Vector3 moveDirection = new Vector3(input.x, 0f, input.y);
+
+        Vector3 worldDirection = cameraYaw * moveDirection;
+        Player.Motor.SetFacingDirection(worldDirection);
+        Player.transform.rotation = Quaternion.LookRotation(worldDirection);
+
+        ChangeState(EvadeFrontState);
+        return true;
     }
 }
 

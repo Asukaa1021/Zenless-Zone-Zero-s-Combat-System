@@ -10,8 +10,8 @@ public class IdleState : MovementState
     {
         base.Enter();
         Debug.Log("Idle");
-        stateMachine.Player.PlayerSO.ReusableData.StartIdleTime = Time.time;
-        stateMachine.Player.Animator.SetFloat("waitTime", Time.time - stateMachine.Player.PlayerSO.ReusableData.StartIdleTime);
+        stateMachine.Player.ReusableData.StartIdleTime = Time.time;
+        stateMachine.Player.Animator.SetFloat("waitTime", Time.time - stateMachine.Player.ReusableData.StartIdleTime);
         stateMachine.Player.Animator.SetBool("isIdling", true);
         moveHoldTime = 0;
     }
@@ -23,10 +23,10 @@ public class IdleState : MovementState
     override public void Update()
     {
         base.Update();
-        stateMachine.Player.Animator.SetFloat("waitTime", Time.time - stateMachine.Player.PlayerSO.ReusableData.StartIdleTime);
+        stateMachine.Player.Animator.SetFloat("waitTime", Time.time - stateMachine.Player.ReusableData.StartIdleTime);
  
 
-        if (stateMachine.Player.PlayerSO.ReusableData.moveVector == Vector2.zero)
+        if (stateMachine.Player.ReusableData.moveVector == Vector2.zero)
         {
             if (moveHoldTime > 0f)
             {

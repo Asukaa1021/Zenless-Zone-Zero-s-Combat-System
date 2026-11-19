@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EvadeFrontState : MovementState
@@ -43,7 +41,7 @@ public class EvadeFrontState : MovementState
     }
     public override void FixedUpdate()
     {
-        //base.FixedUpdate();
+        // Hold the direction chosen when the evade started.
     }
 
     private bool IsEvadeFrontAnimationEnd()

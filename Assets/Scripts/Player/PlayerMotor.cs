@@ -1,12 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 public class PlayerMotor
 {
     private readonly CharacterController controller;
-    private Vector3 horizontalVelocity;
     private float verticalSpeed;
     private Vector3 rootMotionDelta;
     private Vector3 facingDirection;
@@ -24,13 +20,6 @@ public class PlayerMotor
             return;
         }
         facingDirection = direction.normalized;
-    }
-    public void Move(Vector3 direction,float speed)
-    {
-        direction.y = 0f;
-        horizontalVelocity = direction * speed;
-
-        SetFacingDirection(direction);
     }
     public void AddRootMotion(Vector3 deltaPosition)
     {
@@ -70,24 +59,6 @@ public class PlayerMotor
         }
     }
 
-    public void DecreaseVelocity(float decreaseRate)
-    {
-        float t = Mathf.Clamp01(
-            Time.fixedDeltaTime * decreaseRate
-            );
-
-        horizontalVelocity = Vector3.Lerp(
-            horizontalVelocity,
-            Vector3.zero,
-            t
-            );
-
-        if(horizontalVelocity.sqrMagnitude <= 0.01f)
-        {
-            horizontalVelocity = Vector3.zero;
-        }
-    }
-
     public void Tick(float deltaTime)
     {
         if(controller.isGrounded && verticalSpeed < 0f)
@@ -104,7 +75,5 @@ public class PlayerMotor
 
         controller.Move(displacement);
 
-        horizontalVelocity = controller.velocity;
-        horizontalVelocity.y = 0f;
     }
 }

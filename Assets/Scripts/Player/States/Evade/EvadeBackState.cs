@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EvadeBackState : MovementState
@@ -27,8 +25,7 @@ public class EvadeBackState : MovementState
 
         if (!IsEvadeBackAnimationEnd()) return;
 
-     //   Vector2 input = stateMachine.Player.Input.MovementInput.Move.ReadValue<Vector2>();
-        if(stateMachine.Player.PlayerSO.ReusableData.moveVector != Vector2.zero)
+        if(stateMachine.Player.ReusableData.moveVector != Vector2.zero)
         {
             stateMachine.ChangeState(stateMachine.WalkState);
             return;
