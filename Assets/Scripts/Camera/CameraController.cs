@@ -8,6 +8,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float targetDistance;
     private float zoomVelocity;
     private float recenterPitchVelocity;
+    private float recenterYawVelocity;
 
     private CinemachineTransposer transposer;
     private float distance;
@@ -58,12 +59,10 @@ public class CameraController : MonoBehaviour
 
     private void CameraAutoRecenter()
     {
-        Vector3 velocity = player.Motor.Velocity;
-        velocity.y = 0f;
-        bool isMoving = velocity.sqrMagnitude > 0.01f;
+        Vector3 facingDirection = player.transform.forward;
         bool recentlyLooked = Time.time - lastLookInputTimer < player.PlayerSO.StaticData.recenterDelay;
 
-        if (!isMoving || recentlyLooked)
+        if (recentlyLooked)
         {
             recenterPitchVelocity = 0f;
             return;
@@ -75,6 +74,19 @@ public class CameraController : MonoBehaviour
             ref recenterPitchVelocity,
             player.PlayerSO.StaticData.recenterSmoothTime
             );
+
+        float targetYaw = Mathf.Atan2(facingDirection.x, facingDirection.z) * Mathf.Rad2Deg;
+        float angleToTarget = Mathf.Abs(Mathf.DeltaAngle(targetYaw,yaw));
+        if(angleToTarget <= 120f)
+        {
+           yaw = Mathf.SmoothDampAngle(
+               yaw,
+               targetYaw,
+               ref recenterYawVelocity,
+               player.PlayerSO.StaticData.recenterSmoothTime
+               );
+        }
+
     }
 }
 

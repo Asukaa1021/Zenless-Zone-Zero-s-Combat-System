@@ -47,7 +47,7 @@ public class EvadeBackState : MovementState
         if (stateMachine.Player.Animator.IsInTransition(0)) return false;
         AnimatorStateInfo animationState = stateMachine.Player.Animator.GetCurrentAnimatorStateInfo(0);
         if (!animationState.IsName("Base Layer.Anbi_Evade_Back")) return false;
-        if (animationState.normalizedTime < 0.45f) return false;
+        if (animationState.normalizedTime < 0.55f) return false;
         return true;
 
     }

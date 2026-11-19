@@ -31,6 +31,15 @@ public class Player : MonoBehaviour
     void Update()
     {
         PlayerSO.ReusableData.moveVector = Input.MovementInput.Move.ReadValue<Vector2>();
+        float turnSpeed = PlayerSO.StaticData.turnSpeed;
+        if (Animator.IsInTransition(0) &&
+            Animator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.Anbi_Evade_Front") &&
+            Animator.GetNextAnimatorStateInfo(0).IsName("Base Layer.RunState.Anbi_Run"))
+        {
+            float progress = Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            turnSpeed = turnSpeed * Mathf.Lerp(0.1f, 1f, progress);
+        }
+
         stateMachine?.Update();
     }
 

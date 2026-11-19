@@ -32,12 +32,6 @@ public class RunState : MovementState
     {
         base.Update();
 
-        if (CanEvadeFront())
-        {
-            stateMachine.ChangeState(stateMachine.EvadeFrontState);
-            return;
-        }
-
         Vector2 moveInput = stateMachine.Player.Input.MovementInput.Move.ReadValue<Vector2>();
         if (moveInput != Vector2.zero)
         {
@@ -95,24 +89,6 @@ public class RunState : MovementState
         {
             moveEmptyInputTimer = 0f;
         }
-    }
-    private bool CanEvadeFront()
-    {
-        Animator animator = stateMachine.Player.Animator;
-        AnimatorStateInfo animationState = animator.GetCurrentAnimatorStateInfo(0);
-        AnimatorStateInfo nextAnimationState = animator.GetNextAnimatorStateInfo(0);
-
-        bool isWalkToRun = animator.IsInTransition(0) &&
-                            animationState.IsName("Base Layer.Anbi_Walk") &&
-                            nextAnimationState.IsName("Base Layer.RunState.Anbi_Anbi_Run_Start");
-
-        bool isRun = animationState.IsName("Base Layer.RunState.Anbi_Run_Start") ||
-                      animationState.IsName("Base Layer.RunState.Anbi_Run");
-
-        bool canEvadeFront = (isRun || isWalkToRun) &&
-                             stateMachine.Player.Input.MovementInput.Evade.WasPressedThisFrame();
-
-        return canEvadeFront;
     }
 }
 

@@ -43,8 +43,58 @@ public class StateMachine
 
     public void Update()
     {
+        if (TryHandleEvade()) return;
         currentState?.Update();
     }
+    private bool IsEvadeTime()
+    {
+        if (currentState == EvadeBackState || currentState == EvadeFrontState) return false;
+        Animator animator = Player.Animator;
+        AnimatorStateInfo animationState = animator.GetCurrentAnimatorStateInfo(0);
+        AnimatorStateInfo nextAnimationState = animator.GetNextAnimatorStateInfo(0);
 
+        bool isRunToTurnBack = animator.IsInTransition(0) &&
+                               animationState.IsName("Base Layer.RunState.Anbi_Run") &&
+                               nextAnimationState.IsName("Base Layer.RunState.Anbi_TurnBack");
+
+        bool isTurnBack = animationState.IsName("Base Layer.RunState.Anbi_TurnBack");
+
+        return !(isRunToTurnBack || isTurnBack);
+    }
+
+    private bool TryHandleEvade()
+    {
+        if (IsEvadeTime())
+        {
+            if (IsEvadeTime() && Player.Input.MovementInput.Evade.WasPressedThisFrame())
+            {
+                Vector2 input = Player.Input.MovementInput.Move.ReadValue<Vector2>();
+                if (input == Vector2.zero)
+                {
+                    ChangeState(EvadeBackState);
+                    return true;
+                }
+                else
+                {
+                    Quaternion cameraYaw = Quaternion.Euler(
+                        0f,
+                        Player.CameraTransform.eulerAngles.y,
+                        0f
+                        );
+
+                    Vector2 moveInput = Player.Input.MovementInput.Move.ReadValue<Vector2>();
+                    Vector3 moveDirection = new Vector3(moveInput.x, 0f, moveInput.y);
+
+                    Vector3 worldDirection = cameraYaw * moveDirection;
+                    Player.Motor.SetFacingDirection(worldDirection);
+                    Player.transform.rotation = Quaternion.LookRotation(worldDirection);
+
+                    ChangeState(EvadeFrontState);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
 

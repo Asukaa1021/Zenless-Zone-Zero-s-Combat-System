@@ -43,7 +43,7 @@ public class EvadeFrontState : MovementState
     }
     public override void FixedUpdate()
     {
-        base.FixedUpdate();
+        //base.FixedUpdate();
     }
 
     private bool IsEvadeFrontAnimationEnd()

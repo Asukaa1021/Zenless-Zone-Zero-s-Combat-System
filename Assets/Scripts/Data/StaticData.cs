@@ -18,7 +18,7 @@ public class StaticData
     [field: SerializeField] public float zoomSmoothTime = 0.15f;
     [field: SerializeField] public float recenterDelay = 2f;
     [field: SerializeField] public float defaultCameraPitch = 15f;
-    [field: SerializeField] public float recenterSmoothTime = 0.4f;
+    [field: SerializeField] public float recenterSmoothTime = 3.15f;
     [field: SerializeField] public float velocityDecreaseRate = 19f;
 
 }
