@@ -28,6 +28,11 @@ public class EvadeBackState : MovementState
         if (!IsEvadeBackAnimationEnd()) return;
 
      //   Vector2 input = stateMachine.Player.Input.MovementInput.Move.ReadValue<Vector2>();
+        if(stateMachine.Player.PlayerSO.ReusableData.moveVector != Vector2.zero)
+        {
+            stateMachine.ChangeState(stateMachine.WalkState);
+            return;
+        }
 
         stateMachine.ChangeState(stateMachine.IdleState);
         return;
