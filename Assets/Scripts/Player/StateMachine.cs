@@ -13,6 +13,7 @@ public class StateMachine
     [field: SerializeField] public TurnBackState TurnBackState { get; private set; }
     [field: SerializeField] public EvadeBackState EvadeBackState { get; private set; }
     [field: SerializeField] public EvadeFrontState EvadeFrontState { get; private set; }
+    [field: SerializeField] public AttackState AttackState { get; private set; }
     private IState currentState;
 
     public StateMachine(Player player)
@@ -26,6 +27,7 @@ public class StateMachine
         TurnBackState = new TurnBackState(this);
         EvadeBackState = new EvadeBackState(this);
         EvadeFrontState = new EvadeFrontState(this);
+        AttackState = new AttackState(this);
         currentState = IdleState;
         currentState.Enter();
     }

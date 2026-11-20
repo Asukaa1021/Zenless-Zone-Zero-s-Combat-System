@@ -23,6 +23,13 @@ public class IdleState : MovementState
     override public void Update()
     {
         base.Update();
+
+        if(stateMachine.Player.Input.AttackInput.Attack.WasPressedThisFrame())
+        {
+            stateMachine.ChangeState(stateMachine.AttackState);
+            return;
+        }
+
         stateMachine.Player.Animator.SetFloat("waitTime", Time.time - stateMachine.Player.ReusableData.StartIdleTime);
  
 

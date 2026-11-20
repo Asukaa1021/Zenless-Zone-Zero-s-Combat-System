@@ -238,6 +238,34 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""AttackInput"",
+            ""id"": ""744f15ca-7765-4f34-bbf2-6fceb9003f8d"",
+            ""actions"": [
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""e77b6abe-d4ea-459c-a4bd-6acd69ba1f3a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""03389f84-8d68-44df-ab53-1c9f30b67710"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -250,12 +278,16 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_CameraInput = asset.FindActionMap("CameraInput", throwIfNotFound: true);
         m_CameraInput_Look = m_CameraInput.FindAction("Look", throwIfNotFound: true);
         m_CameraInput_Zoom = m_CameraInput.FindAction("Zoom", throwIfNotFound: true);
+        // AttackInput
+        m_AttackInput = asset.FindActionMap("AttackInput", throwIfNotFound: true);
+        m_AttackInput_Attack = m_AttackInput.FindAction("Attack", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
     {
         UnityEngine.Debug.Assert(!m_MovementInput.enabled, "This will cause a leak and performance issues, PlayerInput.MovementInput.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_CameraInput.enabled, "This will cause a leak and performance issues, PlayerInput.CameraInput.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_AttackInput.enabled, "This will cause a leak and performance issues, PlayerInput.AttackInput.Disable() has not been called.");
     }
 
     /// <summary>
@@ -541,6 +573,102 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="CameraInputActions" /> instance referencing this action map.
     /// </summary>
     public CameraInputActions @CameraInput => new CameraInputActions(this);
+
+    // AttackInput
+    private readonly InputActionMap m_AttackInput;
+    private List<IAttackInputActions> m_AttackInputActionsCallbackInterfaces = new List<IAttackInputActions>();
+    private readonly InputAction m_AttackInput_Attack;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "AttackInput".
+    /// </summary>
+    public struct AttackInputActions
+    {
+        private @PlayerInput m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public AttackInputActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "AttackInput/Attack".
+        /// </summary>
+        public InputAction @Attack => m_Wrapper.m_AttackInput_Attack;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_AttackInput; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="AttackInputActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(AttackInputActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="AttackInputActions" />
+        public void AddCallbacks(IAttackInputActions instance)
+        {
+            if (instance == null || m_Wrapper.m_AttackInputActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_AttackInputActionsCallbackInterfaces.Add(instance);
+            @Attack.started += instance.OnAttack;
+            @Attack.performed += instance.OnAttack;
+            @Attack.canceled += instance.OnAttack;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="AttackInputActions" />
+        private void UnregisterCallbacks(IAttackInputActions instance)
+        {
+            @Attack.started -= instance.OnAttack;
+            @Attack.performed -= instance.OnAttack;
+            @Attack.canceled -= instance.OnAttack;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="AttackInputActions.UnregisterCallbacks(IAttackInputActions)" />.
+        /// </summary>
+        /// <seealso cref="AttackInputActions.UnregisterCallbacks(IAttackInputActions)" />
+        public void RemoveCallbacks(IAttackInputActions instance)
+        {
+            if (m_Wrapper.m_AttackInputActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="AttackInputActions.AddCallbacks(IAttackInputActions)" />
+        /// <seealso cref="AttackInputActions.RemoveCallbacks(IAttackInputActions)" />
+        /// <seealso cref="AttackInputActions.UnregisterCallbacks(IAttackInputActions)" />
+        public void SetCallbacks(IAttackInputActions instance)
+        {
+            foreach (var item in m_Wrapper.m_AttackInputActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_AttackInputActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="AttackInputActions" /> instance referencing this action map.
+    /// </summary>
+    public AttackInputActions @AttackInput => new AttackInputActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "MovementInput" which allows adding and removing callbacks.
     /// </summary>
@@ -584,5 +712,20 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnZoom(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "AttackInput" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="AttackInputActions.AddCallbacks(IAttackInputActions)" />
+    /// <seealso cref="AttackInputActions.RemoveCallbacks(IAttackInputActions)" />
+    public interface IAttackInputActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Attack" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAttack(InputAction.CallbackContext context);
     }
 }
