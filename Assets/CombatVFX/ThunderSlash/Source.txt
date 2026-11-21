@@ -1,0 +1,5 @@
+Anime Thunder Slash by ParticleFX Studio
+https://www.particlefx.studio/effects/anime-thunder-slash
+
+The free spritesheet page allows personal and commercial use without attribution.
+The original transparent 6 × 5 PNG is retained. The Unity Prefab plays it once in 0.72 seconds.

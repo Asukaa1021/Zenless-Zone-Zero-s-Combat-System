@@ -22,6 +22,13 @@ public class EvadeFrontState : MovementState
     public override void Update()
     {
         base.Update();
+
+        if (stateMachine.Player.Input.AttackInput.Attack.WasPressedThisFrame())
+        {
+            stateMachine.ChangeState(stateMachine.AttackState);
+            return;
+        }
+
         if (!IsEvadeFrontAnimationEnd()) return;
 
         Vector2 input = stateMachine.Player.Input.MovementInput.Move.ReadValue<Vector2>();

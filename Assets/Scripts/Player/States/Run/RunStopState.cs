@@ -23,6 +23,12 @@ public class RunStopState : MovementState
     public override void Update()
     {
         base.Update();
+        if (stateMachine.Player.Input.AttackInput.Attack.WasPressedThisFrame())
+        {
+            stateMachine.ChangeState(stateMachine.AttackState);
+            return;
+        }
+
         if (stateMachine.Player.Motor.Velocity.sqrMagnitude <= 0.01)
         {
             stateMachine.ChangeState(stateMachine.IdleState);

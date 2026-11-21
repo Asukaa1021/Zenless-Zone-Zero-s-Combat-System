@@ -4,9 +4,12 @@ public class RunState : MovementState
 {
     private float moveEmptyInputTimer;
 
+
     public RunState(StateMachine stateMachine) : base(stateMachine)
     {
     }
+
+    
 
     public override void Enter()
     {
@@ -25,6 +28,16 @@ public class RunState : MovementState
     public override void Update()
     {
         base.Update();
+
+        if (stateMachine.Player.Input.AttackInput.Attack.WasPressedThisFrame())
+        {
+            if(!stateMachine.Player.Animator.IsInTransition(0) && 
+                stateMachine.Player.Animator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.RunState.Anbi_Run_Start"))
+            {
+                stateMachine.ChangeState(stateMachine.AttackState);
+                return;
+            }
+        }
 
         Vector2 moveInput = stateMachine.Player.Input.MovementInput.Move.ReadValue<Vector2>();
         if (moveInput != Vector2.zero)

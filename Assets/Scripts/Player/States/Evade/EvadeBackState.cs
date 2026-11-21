@@ -23,6 +23,12 @@ public class EvadeBackState : MovementState
     {
         base.Update();
 
+        if (stateMachine.Player.Input.AttackInput.Attack.WasPressedThisFrame())
+        {
+            stateMachine.ChangeState(stateMachine.AttackState);
+            return;
+        }
+
         if (!IsEvadeBackAnimationEnd()) return;
 
         if(stateMachine.Player.ReusableData.moveVector != Vector2.zero)
