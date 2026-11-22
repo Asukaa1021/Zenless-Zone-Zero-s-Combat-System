@@ -7,7 +7,7 @@ public class BladeHitProbe : MonoBehaviour
     [SerializeField] private float radius;
     [SerializeField] private LayerMask layer;
     private bool canCheckHit = false;
-
+    private Collider[] hits = new Collider[5];
     private void LateUpdate()
     {
         if (canCheckHit)
@@ -17,13 +17,14 @@ public class BladeHitProbe : MonoBehaviour
     }
     public void ResolveHit()
     {
-        Collider[] hits = Physics.OverlapCapsule(BladeRoot.position, BladeTip.position, radius, layer);
-        foreach(Collider hit in hits)
+        int hitCount = Physics.OverlapCapsuleNonAlloc(BladeRoot.position, BladeTip.position, radius, hits, layer);
+        for(int i = 0;i < hitCount;i++)
         {
+            Collider hit = hits[i];
             Debug.Log(hit + " was hit.");
         }
 
-        if(hits.Length > 0)//不重复击中
+        if(hitCount > 0)//不重复击中
             EndHit(); 
     }
     

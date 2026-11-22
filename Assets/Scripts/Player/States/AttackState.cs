@@ -1,4 +1,5 @@
 using System;
+using UnityEditor.Experimental.GraphView;
 using UnityEditorInternal;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ public class AttackState : MovementState
     private LayerMask layer;
     private bool hasFindEnemy = false;
     private Transform targetEnemy;
+    private float stopDistance = 1.35f;
     private static readonly int[] attackHashes =
     {
         Animator.StringToHash("Base Layer.AttackState.Attack01"),
@@ -169,5 +171,27 @@ public class AttackState : MovementState
         stateMachine.Player.Motor.SetFacingDirection(
             direction
             );
+    }
+
+    public Vector3 LimitAttackMovement(Vector3 displacement)
+    {
+        displacement.y = 0f;
+
+        if (targetEnemy == null || !stateMachine.Player.Animator.GetBool("isAttack"))
+        {
+            return displacement;
+        }
+
+        Vector3 directionToEnemy = targetEnemy.position - stateMachine.Player.transform.position;
+        directionToEnemy.y = 0f;
+        float maxDisplacement = Mathf.Max(directionToEnemy.magnitude - stopDistance,0f);
+
+        float towardDistance = Vector3.Dot(directionToEnemy.normalized, displacement);
+
+        if(towardDistance > maxDisplacement)
+        {
+            displacement -= directionToEnemy.normalized * (towardDistance - maxDisplacement);
+        }
+        return displacement;
     }
 }
