@@ -1,10 +1,15 @@
 using System;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class AttackState : MovementState
 {
     private bool attackBuffer;
     private int attackStep;
+    private float targetSearchRadius = 6f;
+    private LayerMask layer;
+    private bool hasFindEnemy = false;
+    private Transform targetEnemy;
     private static readonly int[] attackHashes =
     {
         Animator.StringToHash("Base Layer.AttackState.Attack01"),
@@ -22,6 +27,7 @@ public class AttackState : MovementState
 
     public AttackState(StateMachine stateMachine) : base(stateMachine)
     {
+        layer = LayerMask.GetMask("Enemy");
     }
 
     public override void Enter()
@@ -31,6 +37,7 @@ public class AttackState : MovementState
         stateMachine.Player.Animator.SetBool("isAttack", true);
         attackStep = 0;
         ClearBuffer();
+        FindAttackTarget();
     }
 
     public override void Exit()
@@ -43,7 +50,10 @@ public class AttackState : MovementState
     public override void Update()
     {
         base.Update();
-        Player player = stateMachine.Player;
+
+       SetFacingToTarget(targetEnemy);
+
+       Player player = stateMachine.Player;
         Animator animator = player.Animator;
         AnimatorStateInfo animation = animator.IsInTransition(0) ?
             animator.GetNextAnimatorStateInfo(0) :
@@ -63,7 +73,9 @@ public class AttackState : MovementState
         {
             attackStep = step; 
             ClearBuffer();
+            FindAttackTarget();
         }
+
 
         if (attackStep > inputWindows.Length || attackBuffer)
         {
@@ -82,7 +94,7 @@ public class AttackState : MovementState
     }
     public override void FixedUpdate()
     {
-        if(canChangeFacing())
+        if(canChangeFacing() && !hasFindEnemy)
         {
             base.FixedUpdate();
         }
@@ -101,5 +113,61 @@ public class AttackState : MovementState
         int index = Array.IndexOf(attackHashes, currentState.fullPathHash);
 
         return 0 <= index && index < attackHashes.Length && progress <= 0.3f;
+    }
+
+    private void FindAttackTarget()
+    {
+        Collider[] enemies = Physics.OverlapSphere(
+            stateMachine.Player.transform.position,
+            targetSearchRadius,
+            layer
+            );
+
+        bool isInAttackZone = false;
+        Vector3 miniDirection = Vector3.zero;
+        Transform target = null;
+        foreach(Collider enemy in enemies)
+        {
+            Vector3 center = enemy.bounds.center;
+            Vector3 direction = center - stateMachine.Player.transform.position;
+            direction.y = 0;
+
+            float angle = Vector3.Angle(direction,stateMachine.Player.transform.forward);
+            if(angle <= 90f)
+            {
+                if (!isInAttackZone)
+                {
+                    miniDirection = direction;
+                    target = enemy.transform;
+                }
+                isInAttackZone = true;
+                if (direction.magnitude < miniDirection.magnitude)
+                {
+                    miniDirection = direction;
+                    target = enemy.transform;
+                } 
+            }
+        }
+        if(isInAttackZone)
+        {
+            hasFindEnemy = true;
+            targetEnemy = target;
+        }
+        else
+        {
+            hasFindEnemy = false;
+            targetEnemy = null;
+        }
+    }
+
+    private void SetFacingToTarget(Transform target)
+    {
+        if (target == null) return;
+
+        Vector3 direction = target.position - stateMachine.Player.transform.position;
+        direction.y = 0f;
+        stateMachine.Player.Motor.SetFacingDirection(
+            direction
+            );
     }
 }
