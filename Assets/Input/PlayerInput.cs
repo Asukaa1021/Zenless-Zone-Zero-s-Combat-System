@@ -266,6 +266,34 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""EXInput"",
+            ""id"": ""0e37b0e2-bd95-422e-9553-b940ad66d5fe"",
+            ""actions"": [
+                {
+                    ""name"": ""EX"",
+                    ""type"": ""Button"",
+                    ""id"": ""11d8f950-d1c0-4f78-869b-8d311246af99"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""6c9efca7-33b1-4c2c-b06d-f5a73f6fb59d"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": ""Hold(duration=1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EX"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -281,6 +309,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         // AttackInput
         m_AttackInput = asset.FindActionMap("AttackInput", throwIfNotFound: true);
         m_AttackInput_Attack = m_AttackInput.FindAction("Attack", throwIfNotFound: true);
+        // EXInput
+        m_EXInput = asset.FindActionMap("EXInput", throwIfNotFound: true);
+        m_EXInput_EX = m_EXInput.FindAction("EX", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
@@ -288,6 +319,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_MovementInput.enabled, "This will cause a leak and performance issues, PlayerInput.MovementInput.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_CameraInput.enabled, "This will cause a leak and performance issues, PlayerInput.CameraInput.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_AttackInput.enabled, "This will cause a leak and performance issues, PlayerInput.AttackInput.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_EXInput.enabled, "This will cause a leak and performance issues, PlayerInput.EXInput.Disable() has not been called.");
     }
 
     /// <summary>
@@ -669,6 +701,102 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="AttackInputActions" /> instance referencing this action map.
     /// </summary>
     public AttackInputActions @AttackInput => new AttackInputActions(this);
+
+    // EXInput
+    private readonly InputActionMap m_EXInput;
+    private List<IEXInputActions> m_EXInputActionsCallbackInterfaces = new List<IEXInputActions>();
+    private readonly InputAction m_EXInput_EX;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "EXInput".
+    /// </summary>
+    public struct EXInputActions
+    {
+        private @PlayerInput m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public EXInputActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "EXInput/EX".
+        /// </summary>
+        public InputAction @EX => m_Wrapper.m_EXInput_EX;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_EXInput; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="EXInputActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(EXInputActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="EXInputActions" />
+        public void AddCallbacks(IEXInputActions instance)
+        {
+            if (instance == null || m_Wrapper.m_EXInputActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_EXInputActionsCallbackInterfaces.Add(instance);
+            @EX.started += instance.OnEX;
+            @EX.performed += instance.OnEX;
+            @EX.canceled += instance.OnEX;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="EXInputActions" />
+        private void UnregisterCallbacks(IEXInputActions instance)
+        {
+            @EX.started -= instance.OnEX;
+            @EX.performed -= instance.OnEX;
+            @EX.canceled -= instance.OnEX;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="EXInputActions.UnregisterCallbacks(IEXInputActions)" />.
+        /// </summary>
+        /// <seealso cref="EXInputActions.UnregisterCallbacks(IEXInputActions)" />
+        public void RemoveCallbacks(IEXInputActions instance)
+        {
+            if (m_Wrapper.m_EXInputActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="EXInputActions.AddCallbacks(IEXInputActions)" />
+        /// <seealso cref="EXInputActions.RemoveCallbacks(IEXInputActions)" />
+        /// <seealso cref="EXInputActions.UnregisterCallbacks(IEXInputActions)" />
+        public void SetCallbacks(IEXInputActions instance)
+        {
+            foreach (var item in m_Wrapper.m_EXInputActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_EXInputActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="EXInputActions" /> instance referencing this action map.
+    /// </summary>
+    public EXInputActions @EXInput => new EXInputActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "MovementInput" which allows adding and removing callbacks.
     /// </summary>
@@ -727,5 +855,20 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAttack(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "EXInput" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="EXInputActions.AddCallbacks(IEXInputActions)" />
+    /// <seealso cref="EXInputActions.RemoveCallbacks(IEXInputActions)" />
+    public interface IEXInputActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "EX" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnEX(InputAction.CallbackContext context);
     }
 }

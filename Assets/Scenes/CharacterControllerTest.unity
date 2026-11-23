@@ -220,6 +220,10 @@ PrefabInstance:
       propertyPath: Length
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3996553433889899232, guid: 32c2029859f15a54b8ffb79f4cb4470c, type: 3}
+      propertyPath: EndingSpeed
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4075502155718290965, guid: 32c2029859f15a54b8ffb79f4cb4470c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -372,10 +376,65 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BladeRoot: {fileID: 1407121630}
   BladeTip: {fileID: 1290862189}
+  hitEffectPrefab: {fileID: 5248170207523213727, guid: 550c8f3d8c6f7d34e8cf4c9ccf73e9fe, type: 3}
   radius: 0.12
   layer:
     serializedVersion: 2
     m_Bits: 128
+  impulseForce: 0.1
+--- !u!114 &271896879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271896874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ImpulseDefinition:
+    m_ImpulseChannel: 1
+    m_ImpulseShape: 2
+    m_CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ImpulseDuration: 0.1
+    m_ImpulseType: 0
+    m_DissipationRate: 0.25
+    m_RawSignal: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_RepeatMode: 0
+    m_Randomize: 1
+    m_TimeEnvelope:
+      m_AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_AttackTime: 0
+      m_SustainTime: 0.2
+      m_DecayTime: 0.7
+      m_ScaleWithImpact: 1
+      m_HoldForever: 0
+    m_ImpactRadius: 100
+    m_DirectionMode: 0
+    m_DissipationMode: 2
+    m_DissipationDistance: 100
+    m_PropagationSpeed: 343
+  m_DefaultVelocity: {x: 0, y: -1, z: 0}
 --- !u!1 &277025616
 GameObject:
   m_ObjectHideFlags: 0
@@ -388,6 +447,7 @@ GameObject:
   - component: {fileID: 277025618}
   - component: {fileID: 277025619}
   - component: {fileID: 277025620}
+  - component: {fileID: 277025621}
   m_Layer: 0
   m_Name: VirtualCamera
   m_TagString: Untagged
@@ -485,7 +545,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   m_MinimumDistanceFromTarget: 0.1
-  m_AvoidObstacles: 0
+  m_AvoidObstacles: 1
   m_DistanceLimit: 0
   m_MinimumOcclusionTime: 0
   m_CameraRadius: 0.1
@@ -495,6 +555,29 @@ MonoBehaviour:
   m_Damping: 0
   m_DampingWhenOccluded: 0
   m_OptimalTargetDistance: 0
+--- !u!114 &277025621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 277025616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ApplyAfter: 2
+  m_ChannelMask: 1
+  m_Gain: 1
+  m_Use2DDistance: 0
+  m_UseCameraSpace: 1
+  m_ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &521165945 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5489123821244906596, guid: 18ab15841ce62054495994280459de94, type: 3}
@@ -639,8 +722,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7864300856523023374, guid: 553163f54487d6f49903e88c35f4420d, type: 3}
+      propertyPath: Steps
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7864300856523023374, guid: 553163f54487d6f49903e88c35f4420d, type: 3}
       propertyPath: Length
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8115390970378326373, guid: 553163f54487d6f49903e88c35f4420d, type: 3}
       propertyPath: m_Name
@@ -973,6 +1060,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8c7ab27c37c9ae842a7e6b11ae61ef45, type: 3}
       insertIndex: -1
       addedObject: {fileID: 271896878}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8c7ab27c37c9ae842a7e6b11ae61ef45, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 271896879}
   m_SourcePrefab: {fileID: 100100000, guid: 8c7ab27c37c9ae842a7e6b11ae61ef45, type: 3}
 --- !u!1 &1162544248
 GameObject:
@@ -1635,15 +1725,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6803780443629659811, guid: 18ab15841ce62054495994280459de94, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6803780443629659811, guid: 18ab15841ce62054495994280459de94, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6803780443629659811, guid: 18ab15841ce62054495994280459de94, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6803780443629659811, guid: 18ab15841ce62054495994280459de94, type: 3}
       propertyPath: m_LocalPosition.x

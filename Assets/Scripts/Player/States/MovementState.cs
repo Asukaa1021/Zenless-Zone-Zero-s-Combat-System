@@ -21,6 +21,11 @@ public class MovementState : IState
     }
     public virtual void Update()
     {
+        bool isEX = stateMachine.Player.Input.EXInput.EX.WasPerformedThisFrame();
+        if (isEX)
+        {
+            stateMachine.ChangeState(stateMachine.EXState);
+        }
     }
     public virtual void FixedUpdate()
     {

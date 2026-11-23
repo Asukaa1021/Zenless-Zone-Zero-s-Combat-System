@@ -180,6 +180,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "EXInput",
+            "id": "0e37b0e2-bd95-422e-9553-b940ad66d5fe",
+            "actions": [
+                {
+                    "name": "EX",
+                    "type": "Button",
+                    "id": "11d8f950-d1c0-4f78-869b-8d311246af99",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6c9efca7-33b1-4c2c-b06d-f5a73f6fb59d",
+                    "path": "<Keyboard>/r",
+                    "interactions": "Hold(duration=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "EX",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
