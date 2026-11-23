@@ -1,5 +1,6 @@
 using Cinemachine;
 using UnityEngine;
+using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
@@ -15,7 +16,8 @@ public class CameraController : MonoBehaviour
     private float yaw;
     private float pitch;
     private float lastLookInputTimer;
-
+    [SerializeField] private Transform returnTarget;
+    private Transform gameplayTarget;
     private void Start()
     {
         virtualCamera = GetComponent<CinemachineVirtualCamera>();
@@ -24,10 +26,13 @@ public class CameraController : MonoBehaviour
         distance = player.PlayerSO.StaticData.defaultCameraDistance;
         targetDistance = distance;
         lastLookInputTimer = Time.time;
+
+        gameplayTarget = virtualCamera.Follow;//正常状态下的target
     }
 
     private void Update()
     {
+        CancelAutoRecenterWhenEX();
         Vector2 lookInput = player.Input.CameraInput.Look.ReadValue<Vector2>();
         float distanceInput = player.Input.CameraInput.Zoom.ReadValue<float>();
 
@@ -87,6 +92,43 @@ public class CameraController : MonoBehaviour
                );
         }
 
+    }
+
+    private void CancelAutoRecenterWhenEX()
+    {
+        if(player.Animator.GetBool("isEX"))
+        {
+            lastLookInputTimer = Time.time;
+        }
+    }
+
+    private IEnumerator ReturnTargetRoutine()
+    {
+        Vector3 startPosition = virtualCamera.Follow.position;
+        virtualCamera.LookAt = returnTarget;
+        virtualCamera.Follow = returnTarget;
+
+        float duration = 0.3f;
+        float timer = 0;
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            float progress = Mathf.Clamp01(timer / duration);
+
+            returnTarget.position = Vector3.Lerp(startPosition, gameplayTarget.position , progress);
+            yield return null;
+        }
+
+        virtualCamera.LookAt = gameplayTarget;
+        virtualCamera.Follow = gameplayTarget;
+    }
+
+    public void ReturnToGameplayTarget()
+    {
+        if (virtualCamera.Follow == gameplayTarget || virtualCamera.LookAt == gameplayTarget)
+            return;
+
+        StartCoroutine(ReturnTargetRoutine());
     }
 }
 
