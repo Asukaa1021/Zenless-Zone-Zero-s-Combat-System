@@ -294,6 +294,34 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""SwitchInput"",
+            ""id"": ""b018f521-d240-4f48-85b5-6345e1e2c633"",
+            ""actions"": [
+                {
+                    ""name"": ""Switch"",
+                    ""type"": ""Button"",
+                    ""id"": ""e062d84c-4a5a-4307-a376-27aa339e97b0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""472e054a-1b01-4290-90d4-b4e59ef46499"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Switch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -312,6 +340,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         // EXInput
         m_EXInput = asset.FindActionMap("EXInput", throwIfNotFound: true);
         m_EXInput_EX = m_EXInput.FindAction("EX", throwIfNotFound: true);
+        // SwitchInput
+        m_SwitchInput = asset.FindActionMap("SwitchInput", throwIfNotFound: true);
+        m_SwitchInput_Switch = m_SwitchInput.FindAction("Switch", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
@@ -320,6 +351,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_CameraInput.enabled, "This will cause a leak and performance issues, PlayerInput.CameraInput.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_AttackInput.enabled, "This will cause a leak and performance issues, PlayerInput.AttackInput.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_EXInput.enabled, "This will cause a leak and performance issues, PlayerInput.EXInput.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_SwitchInput.enabled, "This will cause a leak and performance issues, PlayerInput.SwitchInput.Disable() has not been called.");
     }
 
     /// <summary>
@@ -797,6 +829,102 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="EXInputActions" /> instance referencing this action map.
     /// </summary>
     public EXInputActions @EXInput => new EXInputActions(this);
+
+    // SwitchInput
+    private readonly InputActionMap m_SwitchInput;
+    private List<ISwitchInputActions> m_SwitchInputActionsCallbackInterfaces = new List<ISwitchInputActions>();
+    private readonly InputAction m_SwitchInput_Switch;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "SwitchInput".
+    /// </summary>
+    public struct SwitchInputActions
+    {
+        private @PlayerInput m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public SwitchInputActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "SwitchInput/Switch".
+        /// </summary>
+        public InputAction @Switch => m_Wrapper.m_SwitchInput_Switch;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_SwitchInput; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="SwitchInputActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(SwitchInputActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="SwitchInputActions" />
+        public void AddCallbacks(ISwitchInputActions instance)
+        {
+            if (instance == null || m_Wrapper.m_SwitchInputActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_SwitchInputActionsCallbackInterfaces.Add(instance);
+            @Switch.started += instance.OnSwitch;
+            @Switch.performed += instance.OnSwitch;
+            @Switch.canceled += instance.OnSwitch;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="SwitchInputActions" />
+        private void UnregisterCallbacks(ISwitchInputActions instance)
+        {
+            @Switch.started -= instance.OnSwitch;
+            @Switch.performed -= instance.OnSwitch;
+            @Switch.canceled -= instance.OnSwitch;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="SwitchInputActions.UnregisterCallbacks(ISwitchInputActions)" />.
+        /// </summary>
+        /// <seealso cref="SwitchInputActions.UnregisterCallbacks(ISwitchInputActions)" />
+        public void RemoveCallbacks(ISwitchInputActions instance)
+        {
+            if (m_Wrapper.m_SwitchInputActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="SwitchInputActions.AddCallbacks(ISwitchInputActions)" />
+        /// <seealso cref="SwitchInputActions.RemoveCallbacks(ISwitchInputActions)" />
+        /// <seealso cref="SwitchInputActions.UnregisterCallbacks(ISwitchInputActions)" />
+        public void SetCallbacks(ISwitchInputActions instance)
+        {
+            foreach (var item in m_Wrapper.m_SwitchInputActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_SwitchInputActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="SwitchInputActions" /> instance referencing this action map.
+    /// </summary>
+    public SwitchInputActions @SwitchInput => new SwitchInputActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "MovementInput" which allows adding and removing callbacks.
     /// </summary>
@@ -870,5 +998,20 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnEX(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "SwitchInput" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="SwitchInputActions.AddCallbacks(ISwitchInputActions)" />
+    /// <seealso cref="SwitchInputActions.RemoveCallbacks(ISwitchInputActions)" />
+    public interface ISwitchInputActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Switch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSwitch(InputAction.CallbackContext context);
     }
 }

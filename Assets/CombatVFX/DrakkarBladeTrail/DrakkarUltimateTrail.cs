@@ -6,7 +6,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class DrakkarUltimateTrail : MonoBehaviour
 {
-    private static readonly int UltimateState = Animator.StringToHash("Base Layer.EX.Anbi_SwitchIn_Attack_Ex");
+    private static readonly int UltimateState = Animator.StringToHash("Base Layer.EX.SwitchIn_Attack_Ex");
     private const float LastClipFrame = 174f;
 
     [SerializeField] private Vector2 firstSwingFrames = new Vector2(6f, 25f);

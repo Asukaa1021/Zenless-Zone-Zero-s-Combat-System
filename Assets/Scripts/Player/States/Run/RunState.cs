@@ -32,7 +32,7 @@ public class RunState : MovementState
         if (stateMachine.Player.Input.AttackInput.Attack.WasPressedThisFrame())
         {
             if(!stateMachine.Player.Animator.IsInTransition(0) && 
-                stateMachine.Player.Animator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.RunState.Anbi_Run_Start"))
+                stateMachine.Player.Animator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.RunState.Run_Start"))
             {
                 stateMachine.ChangeState(stateMachine.AttackState);
                 return;
@@ -62,12 +62,12 @@ public class RunState : MovementState
             AnimatorStateInfo current = stateMachine.Player.Animator.GetCurrentAnimatorStateInfo(0);
 
             bool isRunOrStart = !isTransition &&
-                                (current.IsName("Base Layer.RunState.Anbi_Run") ||
-                                current.IsName("Base Layer.RunState.Anbi_Run_Start"));
+                                (current.IsName("Base Layer.RunState.Run") ||
+                                current.IsName("Base Layer.RunState.Run_Start"));
 
             bool isReturningToRun = isTransition &&
-                                    current.IsName("Base Layer.RunState.Anbi_TurnBack") &&
-                                    stateMachine.Player.Animator.GetNextAnimatorStateInfo(0).IsName("Base Layer.RunState.Anbi_Run");
+                                    current.IsName("Base Layer.RunState.TurnBack") &&
+                                    stateMachine.Player.Animator.GetNextAnimatorStateInfo(0).IsName("Base Layer.RunState.Run");
 
             bool canTurnBack = stateMachine.Player.Controller.isGrounded &&
                                 (isRunOrStart || isReturningToRun)

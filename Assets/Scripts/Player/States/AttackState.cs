@@ -17,11 +17,15 @@ public class AttackState : MovementState
         Animator.StringToHash("Base Layer.AttackState.Attack01"),
         Animator.StringToHash("Base Layer.AttackState.Attack02"),
         Animator.StringToHash("Base Layer.AttackState.Attack03"),
-        Animator.StringToHash("Base Layer.AttackState.Attack04")
+        Animator.StringToHash("Base Layer.AttackState.Attack04"),
+        Animator.StringToHash("Base Layer.AttackState.Attack05"),
+        Animator.StringToHash("Base Layer.AttackState.Attack06")
     };
 
     private static readonly (float Start, float End)[] inputWindows =
     {
+         (0f, 1f),
+         (0f, 1f),
          (0f, 1f),
          (0f, 1f),
          (0f, 1f)
@@ -64,7 +68,7 @@ public class AttackState : MovementState
 
         if (step == 0)
         {
-            if(attackStep > 0 && animation.IsName("Base Layer.Anbi_Idle"))
+            if(attackStep > 0 && animation.IsName("Base Layer.Idle"))
             {
                 stateMachine.ChangeState(stateMachine.IdleState);
             }

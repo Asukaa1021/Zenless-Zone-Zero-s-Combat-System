@@ -23,7 +23,7 @@ public class WalkState : MovementState
         if (stateMachine.Player.Input.AttackInput.Attack.WasPressedThisFrame())
         {
             if (!stateMachine.Player.Animator.IsInTransition(0) &&
-                stateMachine.Player.Animator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.WalkState.Anbi_Walk_Start"))
+                stateMachine.Player.Animator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.WalkState.Walk_Start"))
             {
                 stateMachine.ChangeState(stateMachine.AttackState);
                 return;

@@ -244,7 +244,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_Evade_Front
+  m_Name: Evade_Front
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -326,7 +326,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_SwitchIn_Attack_Ex
+  m_Name: SwitchIn_Attack_Ex
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -353,7 +353,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_Run
+  m_Name: Run
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -383,7 +383,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_Walk_End
+  m_Name: Walk_End
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -468,7 +468,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_SwitchIn_Attack_Ex_Start
+  m_Name: SwitchIn_Attack_Ex_Start
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -601,7 +601,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_Idle
+  m_Name: Idle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -681,7 +681,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_Idle_AFK
+  m_Name: Idle_AFK
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -709,7 +709,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_Walk_Start
+  m_Name: Walk_Start
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1654,7 +1654,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_Run_Start
+  m_Name: Run_Start
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1888,7 +1888,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_SwitchIn_Attack_Ex_End
+  m_Name: SwitchIn_Attack_Ex_End
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1915,7 +1915,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_TurnBack
+  m_Name: TurnBack
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1943,7 +1943,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_Run_End
+  m_Name: Run_End
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -2107,7 +2107,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_Walk
+  m_Name: Walk
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -2136,7 +2136,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anbi_Evade_Back
+  m_Name: Evade_Back
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:

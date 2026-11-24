@@ -16,6 +16,7 @@ public class StateMachine
     [field: SerializeField] public AttackState AttackState { get; private set; }
     [field: SerializeField] public EXState EXState { get; private set; }
     private IState currentState;
+    public bool IsIdle => currentState == IdleState;
 
     public StateMachine(Player player)
     {
@@ -58,10 +59,10 @@ public class StateMachine
         AnimatorStateInfo nextAnimationState = animator.GetNextAnimatorStateInfo(0);
 
         bool isRunToTurnBack = animator.IsInTransition(0) &&
-                               animationState.IsName("Base Layer.RunState.Anbi_Run") &&
-                               nextAnimationState.IsName("Base Layer.RunState.Anbi_TurnBack");
+                               animationState.IsName("Base Layer.RunState.Run") &&
+                               nextAnimationState.IsName("Base Layer.RunState.TurnBack");
 
-        bool isTurnBack = animationState.IsName("Base Layer.RunState.Anbi_TurnBack");
+        bool isTurnBack = animationState.IsName("Base Layer.RunState.TurnBack");
 
         return !(isRunToTurnBack || isTurnBack);
     }

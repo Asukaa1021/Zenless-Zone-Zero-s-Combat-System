@@ -57,7 +57,7 @@ public class EvadeFrontState : MovementState
         if (animator.IsInTransition(0)) return false;
 
         AnimatorStateInfo animationState = animator.GetCurrentAnimatorStateInfo(0);
-        if (!animationState.IsName("Base Layer.Anbi_Evade_Front")) return false;
+        if (!animationState.IsName("Base Layer.Evade_Front")) return false;
 
         if (animationState.normalizedTime < 0.5f) return false;
         return true;

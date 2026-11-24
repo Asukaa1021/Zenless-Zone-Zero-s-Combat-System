@@ -21,7 +21,7 @@ public class EXState : MovementState
         base.Enter();
         Debug.Log("EX");
 
-        stateMachine.Player.camera.cullingMask &= ~LayerMask.GetMask("Enemy");
+        stateMachine.Player.mainCamera.cullingMask &= ~LayerMask.GetMask("Enemy");
 
         stateMachine.Player.Animator.SetTrigger("StartEX");
         stateMachine.Player.Animator.SetBool("isEX", true);
@@ -43,7 +43,7 @@ public class EXState : MovementState
         SetFacingToTarget(targetEnemy);
 
         AnimatorStateInfo animationState = stateMachine.Player.Animator.GetCurrentAnimatorStateInfo(0);
-        if(animationState.IsName("Base Layer.Anbi_Idle") && 
+        if(animationState.IsName("Base Layer.Idle") && 
             hasSeenEXStart && 
             !stateMachine.Player.Animator.IsInTransition(0))
         {
@@ -51,14 +51,14 @@ public class EXState : MovementState
             return;
         }
 
-        if (animationState.IsName("Base Layer.EX.Anbi_SwitchIn_Attack_Ex_Start"))
+        if (animationState.IsName("Base Layer.EX.SwitchIn_Attack_Ex_Start"))
         {
             hasSeenEXStart = true;
         }
 
-        if(animationState.IsName("Base Layer.EX.Anbi_SwitchIn_Attack_Ex"))
+        if(animationState.IsName("Base Layer.EX.SwitchIn_Attack_Ex"))
         {
-            stateMachine.Player.camera.cullingMask |= LayerMask.GetMask("Enemy");
+            stateMachine.Player.mainCamera.cullingMask |= LayerMask.GetMask("Enemy");
 
             stateMachine.Player.GamePlayCamera.Follow = stateMachine.Player.UltimateCamera.Follow;
             stateMachine.Player.GamePlayCamera.LookAt = stateMachine.Player.UltimateCamera.LookAt;
@@ -66,7 +66,7 @@ public class EXState : MovementState
             stateMachine.Player.UltimateCamera.Priority = 0;
         }
 
-        if (animationState.IsName("Base Layer.EX.Anbi_SwitchIn_Attack_Ex_End") && 
+        if (animationState.IsName("Base Layer.EX.SwitchIn_Attack_Ex_End") && 
             animationState.normalizedTime >= 0.2f)
         {
             ChangeCameraToGamePlay();

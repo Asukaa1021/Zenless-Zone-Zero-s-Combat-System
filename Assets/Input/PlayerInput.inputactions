@@ -208,6 +208,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "SwitchInput",
+            "id": "b018f521-d240-4f48-85b5-6345e1e2c633",
+            "actions": [
+                {
+                    "name": "Switch",
+                    "type": "Button",
+                    "id": "e062d84c-4a5a-4307-a376-27aa339e97b0",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "472e054a-1b01-4290-90d4-b4e59ef46499",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Switch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

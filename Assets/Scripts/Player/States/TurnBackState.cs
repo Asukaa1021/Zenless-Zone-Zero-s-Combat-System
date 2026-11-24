@@ -26,7 +26,7 @@ public class TurnBackState : MovementState
         if (stateMachine.Player.Animator.IsInTransition(0)) return;
 
         AnimatorStateInfo animationState = stateMachine.Player.Animator.GetCurrentAnimatorStateInfo(0);
-        if (!animationState.IsName("Base Layer.RunState.Anbi_TurnBack")) return;
+        if (!animationState.IsName("Base Layer.RunState.TurnBack")) return;
         if (animationState.normalizedTime <= 0.81f) return;
 
         Vector2 moveInput = stateMachine.Player.Input.MovementInput.Move.ReadValue<Vector2>();

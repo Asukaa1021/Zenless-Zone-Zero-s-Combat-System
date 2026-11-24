@@ -1,4 +1,5 @@
 using Cinemachine;
+using System.Linq;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -11,7 +12,15 @@ public class Player : MonoBehaviour
     [field: SerializeField] public Transform CameraTransform { get; private set; }
     [field: SerializeField] public StateMachine stateMachine;
     [field: SerializeField] public ReusableData ReusableData { get; private set; } = new ReusableData();
-    [field: SerializeField] public Camera camera;
+    [field: SerializeField] public Camera mainCamera;
+    [Header("Animators")]
+    [field: SerializeField] public Animator anbiAnimator;
+    [field: SerializeField] public Animator miyabiAnimator;
+    [Header("GameObject")]
+    [field: SerializeField] public GameObject anbiObject;
+    [field: SerializeField] public GameObject miyabiObject;
+
+
     public CharacterController Controller { get; private set; }
     public PlayerMotor Motor { get; private set; }
     
@@ -20,6 +29,9 @@ public class Player : MonoBehaviour
         Input = new PlayerInput();
         Controller = GetComponent<CharacterController>();
         Motor = new PlayerMotor(Controller);
+        Animator = anbiAnimator;
+        miyabiObject.SetActive(false);
+        anbiObject.SetActive(true);
 
         stateMachine = new StateMachine(this);
 
@@ -28,6 +40,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        SwitchCharacter();
         ReusableData.moveVector = Input.MovementInput.Move.ReadValue<Vector2>();
         stateMachine?.Update();
     }
@@ -54,6 +67,26 @@ public class Player : MonoBehaviour
     private void OnDisable()
     {
         Input.Disable();
+    }
+
+    private void SwitchCharacter()
+    {
+        if (stateMachine.Player.Input.SwitchInput.Switch.WasPressedThisFrame() && stateMachine.IsIdle)
+        {
+            if (Animator == anbiAnimator)
+            {
+                Animator = miyabiAnimator;
+                anbiObject.SetActive(false);
+                miyabiObject.SetActive(true);
+            }
+            else
+            {
+                Animator = anbiAnimator;
+                anbiObject.SetActive(true);
+                miyabiObject.SetActive(false);
+            }
+            stateMachine.ChangeState(stateMachine.IdleState);
+        }
     }
 }
 
