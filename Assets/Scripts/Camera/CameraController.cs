@@ -125,7 +125,7 @@ public class CameraController : MonoBehaviour
 
     public void ReturnToGameplayTarget()
     {
-        if (virtualCamera.Follow == gameplayTarget || virtualCamera.LookAt == gameplayTarget)
+        if (virtualCamera.Follow == gameplayTarget && virtualCamera.LookAt == gameplayTarget)
             return;
 
         StartCoroutine(ReturnTargetRoutine());

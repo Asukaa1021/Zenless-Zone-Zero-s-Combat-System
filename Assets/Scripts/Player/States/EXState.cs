@@ -35,6 +35,7 @@ public class EXState : MovementState
     {
         base.Exit();
         stateMachine.Player.Animator.SetBool("isEX", false);
+        stateMachine.Player.GamePlayCamera.GetComponent<CameraController>().ReturnToGameplayTarget();
     }
 
     public override void Update()
