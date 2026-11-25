@@ -94,5 +94,43 @@ public class StateMachine
         ChangeState(EvadeFrontState);
         return true;
     }
+
+    public bool CanSwitchCharacter()
+    {
+        if (currentState == IdleState ||
+           currentState == WalkState ||
+           currentState == RunState)
+        {
+            AnimatorStateInfo animationState = Player.Animator.GetCurrentAnimatorStateInfo(0);
+            if (!Player.Animator.IsInTransition(0) &&
+                (animationState.IsName("Base Layer.RunState.Run") ||
+                animationState.IsName("Base Layer.WalkState.Walk") ||
+                animationState.IsName("Base Layer.Idle")))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void SyncAnimationAfterSwitch()
+    {
+        Player.Animator.SetBool("isIdling", currentState == IdleState);
+        Player.Animator.SetBool("isRunning", currentState == RunState);
+        Player.Animator.SetBool("isWalking", currentState == WalkState);
+
+        if (currentState == RunState)
+        {
+            Player.Animator.Play("Base Layer.RunState.Run", 0, 0f);
+        }
+        else if (currentState == WalkState)
+        {
+            Player.Animator.Play("Base Layer.WalkState.Walk", 0, 0f);
+        }
+        else if (currentState == IdleState)
+        {
+            Player.Animator.Play("Base Layer.Idle", 0, 0f);
+        }
+    }
 }
 

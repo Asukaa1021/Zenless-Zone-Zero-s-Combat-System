@@ -1,25 +1,25 @@
 using Cinemachine;
-using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     public PlayerInput Input { get; private set; }
-    [field: SerializeField] public CinemachineVirtualCamera GamePlayCamera { get; private set; }
-    [field: SerializeField] public CinemachineVirtualCamera UltimateCamera { get; private set; }
+    
     [field: SerializeField] public PlayerSO PlayerSO { get; private set; }
     [field: SerializeField] public Animator Animator { get; set; }
     [field: SerializeField] public Transform CameraTransform { get; private set; }
     [field: SerializeField] public StateMachine stateMachine;
     [field: SerializeField] public ReusableData ReusableData { get; private set; } = new ReusableData();
+    [field: Header("Camera")]
     [field: SerializeField] public Camera mainCamera;
-    [Header("Animators")]
-    [field: SerializeField] public Animator anbiAnimator;
-    [field: SerializeField] public Animator miyabiAnimator;
-    [Header("GameObject")]
-    [field: SerializeField] public GameObject anbiObject;
-    [field: SerializeField] public GameObject miyabiObject;
-
+    [field: SerializeField] public CinemachineVirtualCamera GamePlayCamera { get; private set; }
+    [field: SerializeField] public CinemachineVirtualCamera UltimateCamera { get; private set; }
+    [field: Header("CharacterSlot")]
+    [field: SerializeField] public List<CharacterSlot> CharacterSlots { get; private set; }
+    [field: SerializeField] public int currentIndex;
 
     public CharacterController Controller { get; private set; }
     public PlayerMotor Motor { get; private set; }
@@ -29,9 +29,9 @@ public class Player : MonoBehaviour
         Input = new PlayerInput();
         Controller = GetComponent<CharacterController>();
         Motor = new PlayerMotor(Controller);
-        Animator = anbiAnimator;
-        miyabiObject.SetActive(false);
-        anbiObject.SetActive(true);
+        currentIndex = 0;
+        Animator = CharacterSlots[0].Animator;
+        CharacterSlots[0].GameObject.SetActive(true);
 
         stateMachine = new StateMachine(this);
 
@@ -71,22 +71,61 @@ public class Player : MonoBehaviour
 
     private void SwitchCharacter()
     {
-        if (stateMachine.Player.Input.SwitchInput.Switch.WasPressedThisFrame() && stateMachine.IsIdle)
+        if (stateMachine.Player.Input.SwitchInput.Switch.WasPressedThisFrame() && stateMachine.CanSwitchCharacter())
         {
-            if (Animator == anbiAnimator)
-            {
-                Animator = miyabiAnimator;
-                anbiObject.SetActive(false);
-                miyabiObject.SetActive(true);
-            }
-            else
-            {
-                Animator = anbiAnimator;
-                anbiObject.SetActive(true);
-                miyabiObject.SetActive(false);
-            }
-            stateMachine.ChangeState(stateMachine.IdleState);
+            int nextIndex = (currentIndex + 1) % CharacterSlots.Count;
+            Animator = CharacterSlots[nextIndex].Animator;
+            CharacterSlots[currentIndex].GameObject.GetComponent<RootMotionRelay>().SetRetreating(true);
+
+            CharacterSlots[nextIndex].GameObject.SetActive(true);
+            stateMachine.SyncAnimationAfterSwitch();
+
+            StartCoroutine(RetreatCharacter());
+
+            UltimateCamera.Follow = CharacterSlots[nextIndex].UltimateTarget;
+            UltimateCamera.LookAt = CharacterSlots[nextIndex].UltimateTarget;
         }
+    }
+
+    IEnumerator RetreatCharacter()
+    {
+        Animator animator = CharacterSlots[currentIndex].Animator;
+        GameObject gameObject = CharacterSlots[currentIndex].GameObject;
+
+        currentIndex++;
+        currentIndex %= CharacterSlots.Count;
+
+        Transform parent = gameObject.transform.parent;
+        Vector3 position = gameObject.transform.localPosition;
+        Quaternion rotation = gameObject.transform.localRotation;  
+
+        gameObject.transform.SetParent(null, true);
+        gameObject.transform.rotation = Quaternion.Euler(0f, CameraTransform.rotation.eulerAngles.y + 150f, 0f);
+
+        animator.SetBool("isEvadeFront", true);
+        animator.Play("Base Layer.Evade_Front", 0, 0f);
+
+        while (true)
+        {
+            yield return null;
+            AnimatorStateInfo animation = animator.GetCurrentAnimatorStateInfo(0);
+
+            if (animation.IsName("Base Layer.Evade_Front") && animation.normalizedTime >= 0.2f)
+            {
+                break;
+            } 
+        }
+
+        animator.SetBool("isEvadeFront", false);
+
+        gameObject.SetActive(false);
+        gameObject.GetComponent<RootMotionRelay>().SetRetreating(false);
+
+        gameObject.transform.parent = parent;
+        gameObject.transform.localPosition = position;
+        gameObject.transform.localRotation = rotation;
+
+        
     }
 }
 

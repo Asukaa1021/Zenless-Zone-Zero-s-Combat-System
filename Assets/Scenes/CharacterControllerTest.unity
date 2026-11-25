@@ -186,7 +186,11 @@ MonoBehaviour:
   <ReusableData>k__BackingField:
     <moveVector>k__BackingField: {x: 0, y: 0}
     <StartIdleTime>k__BackingField: 0
-  camera: {fileID: 786278368}
+  mainCamera: {fileID: 786278368}
+  anbiAnimator: {fileID: 271896875}
+  miyabiAnimator: {fileID: 1948543812}
+  anbiObject: {fileID: 271896874}
+  miyabiObject: {fileID: 1948543811}
 --- !u!143 &55322840
 CharacterController:
   m_ObjectHideFlags: 0
@@ -297,7 +301,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2604469511394640719, guid: abbb4e98e205a45408738f0e3d9c9b0c, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3418020547851917813, guid: abbb4e98e205a45408738f0e3d9c9b0c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -676,7 +680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fdeaf85ac95f914cbbf66a36b62dae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  virtualCamera: {fileID: 0}
+  virtualCamera: {fileID: 277025618}
   player: {fileID: 55322839}
   targetDistance: 0
   returnTarget: {fileID: 1437505234}
@@ -1270,7 +1274,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8c7ab27c37c9ae842a7e6b11ae61ef45, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1193648089417242316, guid: 8c7ab27c37c9ae842a7e6b11ae61ef45, type: 3}
       propertyPath: m_Materials.Array.data[0]
