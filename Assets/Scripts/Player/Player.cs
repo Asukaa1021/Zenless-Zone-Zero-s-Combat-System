@@ -78,7 +78,6 @@ public class Player : MonoBehaviour
 
     private void SwitchCharacter()
     {
-        
         if (stateMachine.Player.Input.SwitchInput.Switch.WasPressedThisFrame())
         {
             Poise poise = LinkSkillManager.ConsumeLinkTarget();
@@ -99,6 +98,7 @@ public class Player : MonoBehaviour
 
                 UltimateCamera.Follow = CharacterSlots[nextIndex].UltimateTarget;
                 UltimateCamera.LookAt = CharacterSlots[nextIndex].UltimateTarget;
+                UltimateCamera.m_Lens.FieldOfView = CharacterSlots[nextIndex].FOV;
                 stateMachine.AttackState.UpdateComboCount();
                 return;
             }
@@ -116,6 +116,7 @@ public class Player : MonoBehaviour
 
                 UltimateCamera.Follow = CharacterSlots[nextIndex].UltimateTarget;
                 UltimateCamera.LookAt = CharacterSlots[nextIndex].UltimateTarget;
+                UltimateCamera.m_Lens.FieldOfView = CharacterSlots[nextIndex].FOV;
                 stateMachine.AttackState.UpdateComboCount();
 
                 return;

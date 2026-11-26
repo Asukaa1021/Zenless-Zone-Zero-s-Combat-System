@@ -11,7 +11,7 @@ public class EXState : MovementState
     private Transform attackTarget;
     private Transform originalFollow;
     private float attackTargetSearchRadius = 3f;
-    private Transform targetEnemy;
+    public Transform TargetEnemy { get; private set;}
     public EXState(StateMachine stateMachine) : base(stateMachine)
     {
     }
@@ -40,7 +40,7 @@ public class EXState : MovementState
 
     public override void Update()
     {
-        SetFacingToTarget(targetEnemy);
+        SetFacingToTarget(TargetEnemy);
 
         AnimatorStateInfo animationState = stateMachine.Player.Animator.GetCurrentAnimatorStateInfo(0);
         if(animationState.IsName("Base Layer.Idle") && 
@@ -85,7 +85,7 @@ public class EXState : MovementState
 
         Quaternion facing = Quaternion.Euler(0f, stateMachine.Player.transform.eulerAngles.y, 0f);
 
-        body.m_FollowOffset = facing * new Vector3(1.3f, 0.55f, 2.4f);
+        body.m_FollowOffset = facing * stateMachine.Player.CharacterSlots[stateMachine.Player.currentIndex].UltimateCameraFollowOffset;
     }
 
     private void ChangeCameraToGamePlay()
@@ -130,11 +130,11 @@ public class EXState : MovementState
         }
         if (isInAttackZone)
         {
-            targetEnemy = target;
+            TargetEnemy = target;
         }
         else
         {
-            targetEnemy = null;
+            TargetEnemy = null;
         }
     }
 

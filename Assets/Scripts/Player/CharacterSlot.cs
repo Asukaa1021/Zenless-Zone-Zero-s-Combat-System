@@ -8,4 +8,6 @@ public class CharacterSlot
     [field: SerializeField] public GameObject GameObject { get; private set; }
     [field: SerializeField] public Transform UltimateTarget { get; private set; }
     [field: SerializeField] public int ComboCount { get; private set; }
+    [field: SerializeField] public Vector3 UltimateCameraFollowOffset { get; private set; }
+    [field: SerializeField] public float FOV {  get; private set; }
 }

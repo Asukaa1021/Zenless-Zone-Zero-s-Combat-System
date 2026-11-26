@@ -108,4 +108,12 @@ public class BladeHitProbe : MonoBehaviour
     {
         EventStaggered -= LinkSkillManager.SetLinkSkillTime;
     }
+
+    public void OpenLinkSkillWindow()
+    {
+        Player player = GetComponentInParent<Player>();
+        var targetEnemy = player.stateMachine.EXState.TargetEnemy;
+        var poise = targetEnemy.GetComponent<Poise>();
+        player.LinkSkillManager.SetLinkSkillTime(poise);
+    }
 }
