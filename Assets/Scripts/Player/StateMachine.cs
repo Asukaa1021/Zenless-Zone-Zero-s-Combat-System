@@ -15,6 +15,7 @@ public class StateMachine
     [field: SerializeField] public EvadeFrontState EvadeFrontState { get; private set; }
     [field: SerializeField] public AttackState AttackState { get; private set; }
     [field: SerializeField] public EXState EXState { get; private set; }
+    [field: SerializeField] public LinkSkillState LinkSkillState { get; private set; }
     private IState currentState;
     public bool IsIdle => currentState == IdleState;
 
@@ -31,6 +32,7 @@ public class StateMachine
         EvadeFrontState = new EvadeFrontState(this);
         AttackState = new AttackState(this);
         EXState = new EXState(this);
+        LinkSkillState = new LinkSkillState(this);
         currentState = IdleState;
         currentState.Enter();
     }

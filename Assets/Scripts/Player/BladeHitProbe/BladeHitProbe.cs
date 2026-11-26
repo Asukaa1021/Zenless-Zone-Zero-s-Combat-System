@@ -1,4 +1,5 @@
 using Cinemachine;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -10,16 +11,21 @@ public class BladeHitProbe : MonoBehaviour
     [SerializeField] private float radius;
     [SerializeField] private LayerMask layer;
     [SerializeField] private float impulseForce = 0.2f;
+    [SerializeField] private int hitDamage = 15;
     private Animator animator;
     private CinemachineImpulseSource impulseSource;
     private bool canCheckHit = false;
     private float hitStopTime = 0.05f;
     private Collider[] hits = new Collider[5];
+    public event Action<Poise> EventStaggered;
+    public LinkSkillManager LinkSkillManager { get; private set; }
+
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
+        LinkSkillManager = gameObject.GetComponentInParent<LinkSkillManager>();
     }
 
     private void LateUpdate()
@@ -35,6 +41,14 @@ public class BladeHitProbe : MonoBehaviour
         for(int i = 0;i < hitCount;i++)
         {
             Collider hit = hits[i];
+            Poise poise = hit.GetComponentInParent<Poise>();
+
+            bool isTimeToLinkSkill = poise.TakeDamage(hitDamage);
+            if(isTimeToLinkSkill)
+            {
+                EventStaggered?.Invoke(poise);
+            }
+
             Debug.Log(hit + " was hit.");
             HitEffectInstantiate(hit);
         }
@@ -83,5 +97,15 @@ public class BladeHitProbe : MonoBehaviour
         yield return new WaitForSecondsRealtime(hitStopTime);
 
         animator.speed = previousAnimatorSpeed;
+    }
+
+    private void OnEnable()
+    {
+        EventStaggered += LinkSkillManager.SetLinkSkillTime;
+    }
+
+    private void OnDisable()
+    {
+        EventStaggered -= LinkSkillManager.SetLinkSkillTime;
     }
 }

@@ -20,15 +20,21 @@ public class Player : MonoBehaviour
     [field: Header("CharacterSlot")]
     [field: SerializeField] public List<CharacterSlot> CharacterSlots { get; private set; }
     [field: SerializeField] public int currentIndex;
+    
+
 
     public CharacterController Controller { get; private set; }
     public PlayerMotor Motor { get; private set; }
-    
+
+    public LinkSkillManager LinkSkillManager { get; private set; }
+
     private void Awake()
     {
         Input = new PlayerInput();
         Controller = GetComponent<CharacterController>();
         Motor = new PlayerMotor(Controller);
+        LinkSkillManager = GetComponent<LinkSkillManager>();
+        
         currentIndex = 0;
         Animator = CharacterSlots[0].Animator;
         CharacterSlots[0].GameObject.SetActive(true);
@@ -63,6 +69,7 @@ public class Player : MonoBehaviour
     private void OnEnable()
     {
         Input.Enable();
+        
     }
     private void OnDisable()
     {
@@ -71,20 +78,50 @@ public class Player : MonoBehaviour
 
     private void SwitchCharacter()
     {
-        if (stateMachine.Player.Input.SwitchInput.Switch.WasPressedThisFrame() && stateMachine.CanSwitchCharacter())
+        
+        if (stateMachine.Player.Input.SwitchInput.Switch.WasPressedThisFrame())
         {
-            int nextIndex = (currentIndex + 1) % CharacterSlots.Count;
-            Animator = CharacterSlots[nextIndex].Animator;
-            CharacterSlots[currentIndex].GameObject.GetComponent<RootMotionRelay>().SetRetreating(true);
+            Poise poise = LinkSkillManager.ConsumeLinkTarget();
 
-            CharacterSlots[nextIndex].GameObject.SetActive(true);
-            stateMachine.SyncAnimationAfterSwitch();
+            if(poise != null)
+            {
+                Debug.Log(poise);
+                int nextIndex = (currentIndex + 1) % CharacterSlots.Count;
+                Animator = CharacterSlots[nextIndex].Animator;
+                CharacterSlots[currentIndex].GameObject.GetComponent<RootMotionRelay>().SetRetreating(true);
 
-            StartCoroutine(RetreatCharacter());
+                CharacterSlots[nextIndex].GameObject.SetActive(true);
 
-            UltimateCamera.Follow = CharacterSlots[nextIndex].UltimateTarget;
-            UltimateCamera.LookAt = CharacterSlots[nextIndex].UltimateTarget;
+                stateMachine.LinkSkillState.SetTarget(poise);
+                stateMachine.ChangeState(stateMachine.LinkSkillState);
+
+                StartCoroutine(RetreatCharacter());
+
+                UltimateCamera.Follow = CharacterSlots[nextIndex].UltimateTarget;
+                UltimateCamera.LookAt = CharacterSlots[nextIndex].UltimateTarget;
+                stateMachine.AttackState.UpdateComboCount();
+                return;
+            }
+
+            if (stateMachine.CanSwitchCharacter())
+            {
+                int nextIndex = (currentIndex + 1) % CharacterSlots.Count;
+                Animator = CharacterSlots[nextIndex].Animator;
+                CharacterSlots[currentIndex].GameObject.GetComponent<RootMotionRelay>().SetRetreating(true);
+
+                CharacterSlots[nextIndex].GameObject.SetActive(true);
+                stateMachine.SyncAnimationAfterSwitch();
+
+                StartCoroutine(RetreatCharacter());
+
+                UltimateCamera.Follow = CharacterSlots[nextIndex].UltimateTarget;
+                UltimateCamera.LookAt = CharacterSlots[nextIndex].UltimateTarget;
+                stateMachine.AttackState.UpdateComboCount();
+
+                return;
+            }
         }
+
     }
 
     IEnumerator RetreatCharacter()
@@ -124,8 +161,8 @@ public class Player : MonoBehaviour
         gameObject.transform.parent = parent;
         gameObject.transform.localPosition = position;
         gameObject.transform.localRotation = rotation;
-
-        
     }
+
+    
 }
 

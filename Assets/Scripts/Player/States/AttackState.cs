@@ -12,6 +12,7 @@ public class AttackState : MovementState
     private bool hasFindEnemy = false;
     private Transform targetEnemy;
     private float stopDistance = 1.35f;
+    private int maxComboCount;
     private static readonly int[] attackHashes =
     {
         Animator.StringToHash("Base Layer.AttackState.Attack01"),
@@ -34,6 +35,7 @@ public class AttackState : MovementState
     public AttackState(StateMachine stateMachine) : base(stateMachine)
     {
         layer = LayerMask.GetMask("Enemy");
+        UpdateComboCount();
     }
 
     public override void Enter()
@@ -56,10 +58,9 @@ public class AttackState : MovementState
     public override void Update()
     {
         base.Update();
+        SetFacingToTarget(targetEnemy);
 
-       SetFacingToTarget(targetEnemy);
-
-       Player player = stateMachine.Player;
+        Player player = stateMachine.Player;
         Animator animator = player.Animator;
         AnimatorStateInfo animation = animator.IsInTransition(0) ?
             animator.GetNextAnimatorStateInfo(0) :
@@ -83,7 +84,7 @@ public class AttackState : MovementState
         }
 
 
-        if (attackStep > inputWindows.Length || attackBuffer)
+        if (attackStep >= maxComboCount || attackBuffer)
         {
             return;
         }
@@ -118,7 +119,7 @@ public class AttackState : MovementState
         AnimatorStateInfo currentState = animator.GetCurrentAnimatorStateInfo(0);
         int index = Array.IndexOf(attackHashes, currentState.fullPathHash);
 
-        return 0 <= index && index < attackHashes.Length && progress <= 0.3f;
+        return 0 <= index && index < maxComboCount && progress <= 0.3f;
     }
 
     private void FindAttackTarget()
@@ -197,5 +198,12 @@ public class AttackState : MovementState
             displacement -= directionToEnemy.normalized * (towardDistance - maxDisplacement);
         }
         return displacement;
+    }
+
+    public void UpdateComboCount()
+    {
+        CharacterSlot currentCharacterInfo = stateMachine.Player.CharacterSlots[stateMachine.Player.currentIndex];
+        GameObject currentCharacter = currentCharacterInfo.GameObject;
+        maxComboCount = currentCharacterInfo.ComboCount;
     }
 }
