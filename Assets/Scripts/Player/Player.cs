@@ -41,6 +41,7 @@ public class Player : MonoBehaviour
 
         stateMachine = new StateMachine(this);
 
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
@@ -94,7 +95,7 @@ public class Player : MonoBehaviour
                 stateMachine.LinkSkillState.SetTarget(poise);
                 stateMachine.ChangeState(stateMachine.LinkSkillState);
 
-                StartCoroutine(RetreatCharacter());
+                RetreatCharacter();
 
                 UltimateCamera.Follow = CharacterSlots[nextIndex].UltimateTarget;
                 UltimateCamera.LookAt = CharacterSlots[nextIndex].UltimateTarget;
@@ -110,6 +111,11 @@ public class Player : MonoBehaviour
                 CharacterSlots[currentIndex].GameObject.GetComponent<RootMotionRelay>().SetRetreating(true);
 
                 CharacterSlots[nextIndex].GameObject.SetActive(true);
+                if(stateMachine.IsIdle)
+                {
+                    CharacterSlots[nextIndex].Animator.Play("Base Layer.SwitchIn");
+                }
+                else
                 stateMachine.SyncAnimationAfterSwitch();
 
                 StartCoroutine(RetreatCharacter());
@@ -138,23 +144,19 @@ public class Player : MonoBehaviour
         Quaternion rotation = gameObject.transform.localRotation;  
 
         gameObject.transform.SetParent(null, true);
-        gameObject.transform.rotation = Quaternion.Euler(0f, CameraTransform.rotation.eulerAngles.y + 150f, 0f);
+        gameObject.transform.rotation = Quaternion.Euler(0f, CameraTransform.rotation.eulerAngles.y - 30f, 0f);
 
-        animator.SetBool("isEvadeFront", true);
-        animator.Play("Base Layer.Evade_Front", 0, 0f);
-
-        while (true)
+        animator.SetTrigger("Switch");
+        animator.Play("Base Layer.SwitchOut", 0, 0f);
+        while(true)
         {
             yield return null;
-            AnimatorStateInfo animation = animator.GetCurrentAnimatorStateInfo(0);
-
-            if (animation.IsName("Base Layer.Evade_Front") && animation.normalizedTime >= 0.2f)
+            if(animator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.SwitchOut") &&
+                animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             {
                 break;
-            } 
-        }
-
-        animator.SetBool("isEvadeFront", false);
+            }
+        }  
 
         gameObject.SetActive(false);
         gameObject.GetComponent<RootMotionRelay>().SetRetreating(false);
